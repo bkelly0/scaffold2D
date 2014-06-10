@@ -37,6 +37,6 @@
 		}
 	}
 	
-	window.ProgressBar = ProgressBar;
+	self.ProgressBar = ProgressBar;
 	
 })();

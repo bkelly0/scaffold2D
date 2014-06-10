@@ -183,5 +183,5 @@
 		}
 	}
 	
-	window.QuadTree = QuadTree;
+	self.QuadTree = QuadTree;
 })();

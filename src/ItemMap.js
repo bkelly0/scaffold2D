@@ -8,7 +8,7 @@
 		this.callback=null;
 	}
 	
-	window.ItemMap = ItemMap;
+	self.ItemMap = ItemMap;
 	
 	ItemMap.prototype = {
 		//use to add objects via a callback function. Usefull for using an object layer for  multiple sprite types

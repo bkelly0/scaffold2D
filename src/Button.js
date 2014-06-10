@@ -122,5 +122,5 @@
 
 	}
 	
-	window.AnimatedButton = AnimatedButton;
+	self.AnimatedButton = AnimatedButton;
 })();

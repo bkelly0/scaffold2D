@@ -27,6 +27,6 @@
 		}
 	}
 	
-	window.Timer = Timer;
+	self.Timer = Timer;
 	
 })();

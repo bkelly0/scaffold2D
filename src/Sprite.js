@@ -227,6 +227,6 @@
 	
 	
 	
-	window.Sprite = Sprite;
+	self.Sprite = Sprite;
 	
 })();

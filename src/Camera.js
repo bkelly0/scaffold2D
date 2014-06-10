@@ -108,6 +108,6 @@
 		
 	}
 	
-	window.Camera = Camera;
+	self.Camera = Camera;
 	
 })();

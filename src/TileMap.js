@@ -437,5 +437,5 @@
 		return map;
 	}
 	
-	window.TileMap = TileMap;
+	self.TileMap = TileMap;
 })();

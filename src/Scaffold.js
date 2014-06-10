@@ -32,7 +32,7 @@ SOFTWARE.
 		
 	}
 
-	window.Scaffold = Scaffold;
+	self.Scaffold = Scaffold;
 
 	//Static vars
 	Scaffold.camera = null;
@@ -48,6 +48,7 @@ SOFTWARE.
 	Scaffold.renderMode = 0; //0 = webgl 1 = canvas
 	Scaffold.scale = 1;
 	Scaffold.timePercentage = 1;
+	Scaffold.soundAvailable = false;
 	
 	//lookup for gamepad.button indexes
 	Scaffold.gamepadLookup = {
@@ -80,14 +81,18 @@ SOFTWARE.
 		} else {
 			Scaffold.renderer = new RendererGL(canvas);
 		}
+		
+	  	if(Sound.init()) {
+	  		Scaffold.soundAvailable = true;
+	  	}
+	
 		Scaffold.camera = new Camera(canvas.width, canvas.height);
 		
 		//gamepads only currently supported by chrome and firefox 
-		
 		if (navigator.userAgent.indexOf("Firefox")!=-1) {
 			window.addEventListener('MozGamepadConnected', Scaffold.gamepadConnected, false);
     		window.addEventListener('MozGamepadDisconnected', Scaffold.gamepadDisconnected, false);
-		} else {
+		} else if (navigator.userAgent.indexOf("Chrome")!=-1) {
 			Scaffold.gamepads = navigator.webkitGetGamepads();
 		}
 
@@ -143,9 +148,7 @@ SOFTWARE.
 	};
 	
 	Scaffold.playSound = function(src) {
-		if (createjs!=undefined) {
-			createjs.Sound.play(Scaffold.loader.assets[src]);
-		}
+		this.loader.assets[src].play();
 	};
 	
 	Scaffold.keyDown = function(e) {

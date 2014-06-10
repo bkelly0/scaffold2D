@@ -5,7 +5,7 @@
 		this.context.scale(Scaffold.scale,Scaffold.scale);
 	}
 	
-	window.RendererCanvas = RendererCanvas;
+	self.RendererCanvas = RendererCanvas;
 	
 	RendererCanvas.prototype = {
 		renderSprite: function(sp) {

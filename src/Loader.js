@@ -19,15 +19,6 @@
 		
 		var that = this;
 		
-		if (createjs!=undefined) {
-			
-			createjs.Sound.alternateExtensions = ["mp3"];
- 			createjs.Sound.addEventListener("fileload", function(e) {
- 				that.itemLoaded(e);
- 			});
-		}
-	
-		
 		for (var i = 0; i< assetList.length; i++) {
 			var asset = assetList[i];
 			var ext = asset.substr(asset.indexOf(".")+1).toLowerCase();
@@ -52,7 +43,10 @@
 				}
 				this.assets[asset].src = asset;
 			} else if (ext=="mp3") {
-				createjs.Sound.registerSound(asset,asset);
+				this.assets[asset] = new Sound(asset, function() {
+					//loaded
+					that.itemLoaded();
+				});
 			} else {
 				this.assets[asset] = "";
 				var type="text";
@@ -92,6 +86,6 @@
 		
 		}
 	}
-	window.Loader = Loader;
+	self.Loader = Loader;
 	
 })();

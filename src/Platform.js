@@ -132,6 +132,6 @@
 
 	}
 	
-	window.Platform = Platform;
+	self.Platform = Platform;
 	
 })();

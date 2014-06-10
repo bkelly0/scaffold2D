@@ -68,7 +68,7 @@
 		
 		addParticle: function() {
 		
-			var p = new window[this.particleClass](this.x, this.y);
+			var p = new self[this.particleClass](this.x, this.y);
 			p.expires = this.elapsedTime+this.lifespan;
 			this.members.push(p);
 		},
@@ -99,6 +99,6 @@
 		}
 	}
 	
-	window.ParticleEmitter = ParticleEmitter;
+	self.ParticleEmitter = ParticleEmitter;
 	
 })();

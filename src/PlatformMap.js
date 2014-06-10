@@ -88,6 +88,6 @@
 	
 	
 	
-	window.PlatformMap = PlatformMap;
+	self.PlatformMap = PlatformMap;
 	
 })();

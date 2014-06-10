@@ -316,6 +316,6 @@
 	},
 	
 	
-	window.RendererGL=RendererGL;
+	self.RendererGL=RendererGL;
 	
 })();

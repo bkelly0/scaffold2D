@@ -35,6 +35,6 @@
 		
 	}
 	
-	window.State = State;
+	self.State = State;
 
 })();
