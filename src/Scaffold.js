@@ -49,6 +49,7 @@ SOFTWARE.
 	Scaffold.scale = 1;
 	Scaffold.timePercentage = 1;
 	Scaffold.soundAvailable = false;
+	Scaffold.canvasFallback = true;
 	
 	//lookup for gamepad.button indexes
 	Scaffold.gamepadLookup = {
@@ -75,11 +76,16 @@ SOFTWARE.
 	}
 	
 	Scaffold.init = function(canvas) {
+
+		if (Scaffold.renderMode==0) {
+			Scaffold.renderer = new RendererGL(canvas);
+			if (!Scaffold.renderer.gl && Scaffold.canvasFallback) {
+				Scaffold.renderMode = 1;
+			}
+		}
 		if (Scaffold.renderMode==1) {
 			Scaffold.renderer = new RendererCanvas(canvas);
 			
-		} else {
-			Scaffold.renderer = new RendererGL(canvas);
 		}
 		
 	  	if(Sound.init()) {
@@ -135,7 +141,7 @@ SOFTWARE.
 		    if (Scaffold.state!=null) {
 		    	Scaffold.state.update(elapsedTime);
 		    	if (Scaffold.renderMode==1) {
-		    		Scaffold.renderer.context.clearRect(0,0, 640, 480);
+		    		Scaffold.renderer.context.clearRect(0,0, Scaffold.camera.bounds.width, Scaffold.camera.bounds.height);
 		    	} else {
 		    		Scaffold.renderer.startRender();
 		    	}
@@ -160,10 +166,16 @@ SOFTWARE.
 			 *  "+ -" Volume control
 			 *  "p" pause
 			 */
-			if (e.keyCode==189 && createjs!=undefined) {
-				createjs.Sound.setVolume(createjs.Sound.getVolume()-.1);
-			} else if (e.keyCode==187 && createjs!=undefined) {
-				createjs.Sound.setVolume(createjs.Sound.getVolume()+.1);
+			if (e.keyCode==189) {
+				//volume down
+				if (Sound.volume>0) {
+					Sound.setVolume(Sound.volume-.1);
+				}
+			} else if (e.keyCode==187) {
+				//volume up
+				if (Sound.volume<1) {
+					Sound.setVolume(Sound.volume+.1);
+				}
 			} if (e.keyCode==80) {
 				Scaffold.paused = !Scaffold.paused;
 			}	
@@ -212,7 +224,8 @@ SOFTWARE.
 		}
 		
 		var overlap = Scaffold.getOverlap(spA.getBounds(), spB.getBounds());
-		
+		spA.colliding = false; spB.colliding = false;
+
 		if (overlap>0) {
 			//Do A
 			var e = {top:0, bottom:0, left:0, right:0, type:spB.type, obj:spB};

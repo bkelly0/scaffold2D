@@ -5,6 +5,8 @@
 		this.quadTree = new QuadTree(0, Scaffold.camera.bounds);
 		this.removeList = []; //remove these members next update
 		this.debugQuadTree = false;
+		this.maxQuadObject = 10;
+		this.maxQuadLevels = 10;
 	}
 	
 	Group.prototype = {
@@ -19,7 +21,7 @@
 		render:function(context, camera) {
 			Scaffold.renderer.renderGroup(this);
 			if (this.debugQuadTree) {
-				this.quadTree.renderNodes();
+				this.quadTree.drawNodes();
 			}
 		},
 		
@@ -31,7 +33,7 @@
 			}
 			this.removeList = [];
 			
-			this.quadTree = new QuadTree(0, Scaffold.camera.bounds);
+			this.quadTree = new QuadTree(0, Scaffold.camera.bounds,this.maxQuadLevels, this.maxQuadObjects);
 			//var m=[];
 			var i = this.members.length;
 			while (i--) {
@@ -40,8 +42,6 @@
 				this.quadTree.insertSprite(this.members[i]);
 			}
 			//this.members = m;
-			
-			
 		},
 		
 		collideInternal:function(t) {

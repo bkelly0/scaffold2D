@@ -4,6 +4,7 @@
 		this.textures = [];
     	
 	    this.gl = canvas.getContext("experimental-webgl");
+	    if (!this.gl) return false;
 	  
 	    this.gl.viewportWidth = canvas.width;
 	    this.gl.viewportHeight = canvas.height;
