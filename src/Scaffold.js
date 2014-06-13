@@ -47,7 +47,7 @@ SOFTWARE.
 	Scaffold.gamepads = [];
 	Scaffold.renderMode = 0; //0 = webgl 1 = canvas
 	Scaffold.scale = 1;
-	Scaffold.timePercentage = 1;
+	Scaffold.timeScale = 1;
 	Scaffold.soundAvailable = false;
 	Scaffold.canvasFallback = true;
 	
@@ -123,7 +123,7 @@ SOFTWARE.
 	    var elapsedTime = d-Scaffold.lastTime;
 	    if (Scaffold.lastTime==0) elapsedTime = 16;
 	    
-	    Scaffold.timePercentage = elapsedTime/16; //percentage based on 60 fps
+	    Scaffold.timeScale = elapsedTime/16; //percentage based on 60 fps
 	    Scaffold.lastTime = d;
 
 	  
