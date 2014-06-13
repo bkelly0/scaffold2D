@@ -121,7 +121,7 @@
 			this.tileAddedListeners.push(fnc);
 		},
 		
-		render: function(context, camera) {
+		render: function() {
 			if (this.mapArray.length==0) {
 				return;
 			}
@@ -225,7 +225,6 @@
 				var yTopLeft = Math.max(sp.y+sp.trim.top, tileBounds.y);
 						
 				var yOverlap = Math.max(0, (yBottomRight - yTopLeft));
-			
 				return overlap = xOverlap * yOverlap;
 		},
 		
@@ -270,7 +269,6 @@
 				startCol = t2.column;
 			}
 		
-			
 		
 			for (var i = startRow; i<=t3.row; i++) {
 			
@@ -281,7 +279,8 @@
 					var tileBounds = {y: i*this.tileHeight, x:j*this.tileWidth, top: i*this.tileHeight, bottom: i*this.tileHeight+this.tileHeight, left: j*this.tileWidth, right: j*this.tileWidth+this.tileWidth};
 					var event = {top:0, bottom:0, left:0, right:0, tileId: currTile, type: 'map', velocity:{x:sp.velocity.x, y:sp.velocity.y}};
 					
-				
+
+					
 					if (currTile>=this.collideIndex) {
 						
 						var oldY = sp.y;
@@ -291,7 +290,6 @@
 							sp.x = sp.prevPos.x;  	//check y first.. so undo x
 						}
 						var overlap = this.getOverlap(sp, tileBounds);
-
 						if (overlap>0) {
 							event = this.adjustY(tileBounds, sp, event);
 						}
@@ -317,7 +315,9 @@
 						if (sp.onCollide!=undefined && wasCollision) {
 							sp.onCollide(event);
 						}
-					
+						
+						
+				
 					} else if (this.debug) {
 						this.debugRects.push(tileBounds);
 					}
@@ -333,31 +333,31 @@
 		
 		adjustY: function(tileBounds, sp, e) {
 						
-						if (sp.prevPos.y+sp.spriteHeight-sp.trim.bottom <= tileBounds.y ) {
-							
+						if (sp.prevPos.y+sp.spriteHeight-sp.trim.bottom <= tileBounds.y+this.tileWidth/2 ) {
 							sp.y = tileBounds.top-sp.spriteHeight+sp.trim.bottom;
 							sp.velocity.y=0;
 							e.bottom = 1; //bottom of sprite
+							sp.historyY = 1;
 						} else if (sp.prevPos.y + sp.trim.top >= tileBounds.y+this.tileHeight) {
 							sp.y = tileBounds.y + this.tileHeight-sp.trim.top;
 							e.top = 1;
 							sp.velocity.y = 0;
+							sp.historyY = -1;
 						} 
 						return e;
 		},
 		
 		adjustX: function(tileBounds, sp, e) {
-						if (sp.prevPos.x+sp.trim.left >= tileBounds.x+this.tileWidth) {
+						if (sp.prevPos.x+sp.trim.left >= tileBounds.x+(this.tileWidth/2)) {
 							sp.x = tileBounds.x + this.tileWidth-sp.trim.left;
 							e.left = 1;
 							sp.velocity.x = 0;
 
-						} else if (sp.prevPos.x+sp.spriteWidth-sp.trim.right <= tileBounds.x) {
+						} else if (sp.prevPos.x+sp.spriteWidth-sp.trim.right <= tileBounds.x+(this.tileWidth/2)) {
 							sp.x = tileBounds.x - sp.spriteWidth+sp.trim.right;
 							e.right = 1;
 							sp.velocity.x = 0;
-						
-						}
+						} 
 					
 						return e;
 

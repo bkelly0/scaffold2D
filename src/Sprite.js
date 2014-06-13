@@ -141,10 +141,10 @@
 			if (this.pseudoPhysics) {
 				//this.velocity.y += this.gravity*tp;
 				if (this.velocity.y>0) {
-					this.velocity.y += this.gravity-this.drag.y*Scaffold.timePercentage; 
+					this.velocity.y += this.gravity-this.drag.y; 
 					if (this.velocity.y<0) this.velocity.y = 0;
 				} else if (this.velocity.y<0) {
-					this.velocity.y += this.gravity+this.drag.y*Scaffold.timePercentage; 
+					this.velocity.y += this.gravity+this.drag.y; 
 					if (this.velocity.y>0) this.velocity.y = 0;
 				} else {
 					this.velocity.y+=this.gravity;
@@ -158,7 +158,7 @@
 				
 				
 				//this.y += this.velocity.y + .5|0; //binary or round
-				this.y+=this.velocity.y;
+				this.y+=this.velocity.y*Scaffold.timePercentage;
 				
 				if (this.velocity.x>0) {
 					this.velocity.x-= this.drag.x;
@@ -175,8 +175,11 @@
 				} else if (this.velocity.x < -this.maxVelocity.x) {
 					this.velocity.x = -this.maxVelocity.x;
 				}
-				this.x+=this.velocity.x;
+				this.x+=this.velocity.x*Scaffold.timePercentage;
+				this.temp = Scaffold.timePercentage;
 			}
+			
+			
 			//sticky platforms
 		
 			if (this.platform!=null) {
@@ -211,13 +214,14 @@
 		
 
 		onCollide: function(e) {
-		
+			
 			if (e.type=="map" && e.velocity.y > 1 && (e.top || e.bottom)) {
 				this.velocity.y = - e.velocity.y*this.bounce;
 			}
 			if (e.type=="map" && (e.right || e.left)) {
 				this.velocity.x = - e.velocity.x*this.bounce;
 			}
+	
 		
 		},
 		
