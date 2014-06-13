@@ -112,7 +112,7 @@
 		
 		
 		update: function(elapsedTime) {
-			var tp = Scaffold.timePercentage;
+			var tp = Scaffold.timeScale;
 			
 			if (this.currentAnimation.frames.length>1) {
 				this.fpsTime += elapsedTime;
@@ -158,7 +158,7 @@
 				
 				
 				//this.y += this.velocity.y + .5|0; //binary or round
-				this.y+=this.velocity.y*Scaffold.timePercentage;
+				this.y+=this.velocity.y*Scaffold.timeScale;
 				
 				if (this.velocity.x>0) {
 					this.velocity.x-= this.drag.x;
@@ -175,8 +175,8 @@
 				} else if (this.velocity.x < -this.maxVelocity.x) {
 					this.velocity.x = -this.maxVelocity.x;
 				}
-				this.x+=this.velocity.x*Scaffold.timePercentage;
-				this.temp = Scaffold.timePercentage;
+				this.x+=this.velocity.x*Scaffold.timeScale;
+				this.temp = Scaffold.timeScale;
 			}
 			
 			
