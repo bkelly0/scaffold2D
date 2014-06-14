@@ -98,7 +98,7 @@ SOFTWARE.
 		if (navigator.userAgent.indexOf("Firefox")!=-1) {
 			window.addEventListener('MozGamepadConnected', Scaffold.gamepadConnected, false);
     		window.addEventListener('MozGamepadDisconnected', Scaffold.gamepadDisconnected, false);
-		} else if (navigator.userAgent.indexOf("Chrome")!=-1) {
+		} else if (navigator.userAgent.indexOf("Chrome")!=-1 && navigator.userAgent.indexOf("Mobile")==-1) {
 			Scaffold.gamepads = navigator.webkitGetGamepads();
 		}
 
