@@ -1,11 +1,11 @@
-COMMING SOON:
+##COMMING SOON:
 
 Example Files
 
 Angled Tiles
 
 
-FEATURES:
+##FEATURES:
 
 WebGL or Canvas rendering / WebGL with canvas fallback
 
