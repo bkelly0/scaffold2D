@@ -1,10 +1,13 @@
 COMMING SOON:
-Example Files & Minified source
+
+Example Files
+
+Angled Tiles
 
 
 FEATURES:
 
-WebGL or Canvas rendering
+WebGL or Canvas rendering / WebGL with canvas fallback
 
 QuadTree collision detection
 
@@ -24,6 +27,8 @@ Particle Emitters
 
 Sprite-following camera
 
-Asset loading for image and map files
+Asset loading for image, map, and audio files
 
 Vector lines and circles with WebGL
+
+Audio with Web Audio
