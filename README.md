@@ -1,10 +1,3 @@
-##COMMING SOON:
-
-Example Files
-
-Angled Tiles
-
-
 ##FEATURES:
 
 WebGL or Canvas rendering / WebGL with canvas fallback
@@ -32,3 +25,9 @@ Asset loading for image, map, and audio files
 Vector lines and circles with WebGL
 
 Audio with Web Audio
+
+##COMING SOON:
+
+Example Files
+
+Angled Tiles
