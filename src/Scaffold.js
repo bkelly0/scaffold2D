@@ -101,6 +101,24 @@ SOFTWARE.
 		} else if (navigator.userAgent.indexOf("Chrome")!=-1 && navigator.userAgent.indexOf("Mobile")==-1) {
 			Scaffold.gamepads = navigator.webkitGetGamepads();
 		}
+		
+		if (!self.requestAnimationFrame) {
+
+			if (self.msRequestAnimationFrame) {
+				self.requestAnimationFrame = self.msRequestAnimationFrame;
+			} else if (self.mozRequestAnimationFrame) {
+				self.requestAnimationFrame = self.mozRequestAnimationFrame;
+			} else if (self.webkitRequestAnimationFrame) {
+				self.requestAnimationFrame = self.webkitRequestAnimationFrame;
+			} else if (self.oRequestAnimationFrame) {
+				self.requestAnimationFrame = self.oRequestAnimationFrame;
+			} else {
+				//console.log("RequestAnimationFrame not found.");
+				self.requestAnimationFrame = function(callback) {
+					setInterval(callback, 16);
+				}
+			}
+		}
 
 		window.onblur = function(e) {
 		

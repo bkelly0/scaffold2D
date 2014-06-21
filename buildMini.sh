@@ -5,6 +5,6 @@ rm dist/Scaffold.cat.js
 buildNumber=`git rev-list HEAD --count`
 echo "Version: 1.0.$buildNumber"
 sed -i "" "s/%buildNumber%/$buildNumber/g" dist/Scaffold.min.js
-
+cp dist/Scaffold.min.js demos/quadTree/js/
 
 
