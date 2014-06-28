@@ -240,6 +240,15 @@
 				return null;
 			}
 			
+			if (sp.x!=sp.prevPos.x) {
+				sp.locked.left = 0;
+				sp.locked.right = 0;
+			}
+			if (sp.y != sp.prevPos.y) {
+				sp.locked.top = 0;
+				sp.locked.bottom = 0;
+			}
+			
 			//console.log(this.mapArray[0].length);
 			
 			//check surrounding tiles
@@ -337,12 +346,12 @@
 							sp.y = tileBounds.top-sp.spriteHeight+sp.trim.bottom;
 							sp.velocity.y=0;
 							e.bottom = 1; //bottom of sprite
-							sp.historyY = 1;
+							sp.locked.bottom = 1;
 						} else if (sp.prevPos.y + sp.trim.top >= tileBounds.y+this.tileHeight) {
 							sp.y = tileBounds.y + this.tileHeight-sp.trim.top;
 							e.top = 1;
 							sp.velocity.y = 0;
-							sp.historyY = -1;
+							sp.locked.top = 1;
 						} 
 						return e;
 		},
@@ -352,11 +361,13 @@
 							sp.x = tileBounds.x + this.tileWidth-sp.trim.left;
 							e.left = 1;
 							sp.velocity.x = 0;
+							sp.locked.left = 1;
 
 						} else if (sp.prevPos.x+sp.spriteWidth-sp.trim.right <= tileBounds.x+(this.tileWidth/2)) {
 							sp.x = tileBounds.x - sp.spriteWidth+sp.trim.right;
 							e.right = 1;
 							sp.velocity.x = 0;
+							sp.locked.right = 1;
 						} 
 					
 						return e;

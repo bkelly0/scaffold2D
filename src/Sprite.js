@@ -39,7 +39,10 @@
 		this.flashing = false;
 		
 		this.pseudoPhysics = 1; //disable to just use x/y positions without velocity,drag, or gravity
-			
+		this.solidCollide = 0;
+		this.moveable = 1;
+		this.locked = {left:0, right:0, top:0, bottom:0 };
+		
 		//save the frame positions in the sprites image file
 		this.framePositions = [];
 			if (this.images) {
