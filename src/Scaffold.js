@@ -228,65 +228,59 @@ SOFTWARE.
 		
 		return {total : xOverlap * yOverlap, y:yOverlap, x:xOverlap};
 	}
-	
+
 	Scaffold.resolveX = function(spA, spB, overlap) {
 		
 		var diffA = Math.abs(spA.x - spA.prevPos.x);
 		var diffB = Math.abs(spB.x - spB.prevPos.x);
 		var diffTotal = diffA + diffB;
-		var obj = {a: {sprite: spA}, b:{sprite:spB}};
+		
 		
 		if (!spA.moveable || spA.locked.left) {
-			obj.b.x = spA.x+spA.spriteWidth;
-			obj.b.velocityX *= -spB.bounce;
-			obj.a.x = spA.x;
-			obj.a.velocityX = spA.velocity.x;
+			spB.x = spA.x+spA.spriteWidth;
+			spB.velocity.x *= -spB.bounce;
 		} else if (!spB.moveable || spB.locked.right) {
-			obj.a.x = spB.x - spA.spriteWidth;
-			obj.a.velocityX *= -spA.bounce;
-			obj.b.x = spB.x;
-			obj.b.velocityX = spB.velocity.x;
+			spA.x = spB.x - spA.spriteWidth;
+			spA.velocity.x *= -spA.bounce;
 		} else {			
-			obj.a.x = spA.x-overlap.x*(diffB/diffTotal);
-			obj.b.x = spB.x+overlap.x*(diffA/diffTotal);			
+			spA.x -= overlap.x*(diffB/diffTotal);
+			spB.x += overlap.x*(diffA/diffTotal);
+						
 			var vA = spB.velocity.x;
 			var vB = spA.velocity.x;
 			var average = (vA + vB) /2;
-			obj.a.velocityX = average;
-			obj.b.velocityX = average;
+
+			spA.velocity.x = average;
+			spB.velocity.x = average;
 		}
-		return obj;
+		
 	}
 	
 	Scaffold.resolveY = function(spA, spB, overlap) {
 		var diffA = Math.abs(spA.y - spA.prevPos.y);
 		var diffB = Math.abs(spB.y - spB.prevPos.y);
 		var diffTotal = diffA + diffB;
-		var obj = {a:{sprite:spA}, b:{sprite:spB}};
 		
 		if (!spA.moveable || spA.locked.top) {
-			obj.b.y = spA.y+spA.spriteHeight;
-			obj.b.velocityY =-spB.velocity.y*spB.bounce;
-			obj.a.y = spA.y;
-			obj.a.velocityY = spA.velocity.y;
+			spB.y = spA.y+spA.spriteHeight;
+			spB.velocity.y =0;
 		} else if (!spB.moveable || spB.locked.bottom) {
-			obj.a.y = spB.y - spA.spriteHeight;
-			obj.a.velocityY = -spB.velocity.y*spB.bounce;
-			obj.b.y = spB.y;
-			obj.b.velocityY = spB.velocity.y;
-		} else {					
-			obj.a.y = spA.y-overlap.y*(diffB/diffTotal);
-			obj.b.y = spB.y + overlap.y*(diffA/diffTotal);
+			spA.y = spB.y - spA.spriteHeight;
+			spA.velocity.y = 0;
+		} else {
+			
+			spA.x -= overlap.y*(diffB/diffTotal);
+			spB.x += overlap.y*(diffA/diffTotal);
 								
 			var vA = spB.velocity.y * ((spB.velocity.y>0)? 1: -1);
 			var vB = spA.velocity.y * ((spA.velocity.y>0)? 1: -1);
 			var average = (vA + vB) /2;
 
-			obj.a.velocityY = average * ((spA.velocity.y>0)?1:-1);
-			obj.b.velocityY = average * ((spA.velocity.y>0)?1:-1);
+			spA.velocity.y = average * ((spA.velocity.y>0)?1:-1);
+			spB.velocity.y = average * ((spA.velocity.y>0)?1:-1);
 			
 		}
-		return obj;
+
 	}
 	
 	//Collide Two sprites 
@@ -308,35 +302,24 @@ SOFTWARE.
 					
 					var o = Scaffold.getOverlap(spA.getBounds(), spB.getBounds());
 					//console.log(o);
-					if (o.total>0) {
-						if (spA.y<spB.y) {
-							var dataY = Scaffold.resolveY(spA, spB, o);
-						} else {
-							var dataY = Scaffold.resolveY(spB, spA, o);
-						}
-						if (spA.x< spB.x) {
-							var dataX = Scaffold.resolveX(spA, spB, o);	
-						} else {
-							var dataX = Scaffold.resolveX(spB, spA, o);
-						}
-						if (o.x < o.y) {
-							dataX.a.sprite.x = dataX.a.x;
-							dataX.b.sprite.x = dataX.b.x;
-							dataX.a.sprite.velocity.x = dataX.a.velocityX;
-							dataX.b.sprite.velocity.x = dataX.b.velocityX;
-						} else {
-							console.log("Y");
-							dataY.a.sprite.y = dataY.a.y;
-							dataY.b.sprite.y = dataY.b.y;
-							dataY.a.sprite.velocity.y = dataY.a.velocityY;
-							dataY.b.sprite.velocity.y = dataY.b.velocityY;
-						}
-					}
 					
-						
-						
+					if (o.total>0) {
+						if (spA.prevPos.y+spA.spriteHeight <= spB.y) {
+							if (spA.y<spB.y) {
+								Scaffold.resolveY(spA, spB, o);
+							} else {
+								Scaffold.resolveY(spB, spA, o);
+							}
+						} else {
+							if (spA.x< spB.x) {
+								Scaffold.resolveX(spA, spB, o);	
+							} else {
+								Scaffold.resolveX(spB, spA, o);
+							}
 							
-		
+						}
+						
+					}
 				}
 			}
 			
