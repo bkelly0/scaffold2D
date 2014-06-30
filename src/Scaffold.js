@@ -266,7 +266,8 @@ SOFTWARE.
 			spB.velocity.y =0;
 		} else if (!spB.moveable || spB.locked.bottom) {
 			spA.y = spB.y - spA.spriteHeight;
-			spA.velocity.y = 0;
+			spA.velocity.y *= -spA.bounce;
+			
 		} else {
 			
 			spA.x -= overlap.y*(diffB/diffTotal);
@@ -304,7 +305,7 @@ SOFTWARE.
 					//console.log(o);
 					
 					if (o.total>0) {
-						if (spA.prevPos.y+spA.spriteHeight <= spB.y) {
+						if (spA.prevPos.y+spA.spriteHeight <= spB.prevPos.y+5 || spA.prevPos.y >= spB.prevPos.y+spB.spriteHeight ) {
 							if (spA.y<spB.y) {
 								Scaffold.resolveY(spA, spB, o);
 							} else {
