@@ -5,7 +5,11 @@
 		this.prevPos = {x:x, y:y};
 		this.direction = {x: 0, y:0};
 		this.images = spriteSheet || null;
+		
 		this.colliding = false;
+		this.solidCollide = true;
+		this.moveable = true;
+		this.locked = {left:0, right:0, top:0, bottom:0}; //locks edges for collision resolution
 		
 		this.frameRate = fps || 30;
 		this.fpsTime = 0;
@@ -22,7 +26,6 @@
 		this.bounds={left: this.x, width:this.spriteWidth, height:this.spriteHeight, right:this.x+this.spriteWidth, top: this.y, bottom:this.y+this.spriteHeight};
 
 					
-
 		this.velocity = {x:0 , y:0};
 		this.maxVelocity = {x:6, y:8}
 		this.drag = {x:.1, y: 0}; 
@@ -39,10 +42,7 @@
 		this.flashing = false;
 		
 		this.pseudoPhysics = 1; //disable to just use x/y positions without velocity,drag, or gravity
-		this.solidCollide = 0;
-		this.moveable = 1;
-		this.locked = {left:0, right:0, top:0, bottom:0 };
-		
+			
 		//save the frame positions in the sprites image file
 		this.framePositions = [];
 			if (this.images) {
@@ -186,10 +186,13 @@
 			//sticky platforms
 		
 			if (this.platform!=null) {
-				this.x+= this.platform.x-this.platform.prevPos.x;
-				if (this.velocity.y>0) {
-					this.y = this.platform.y-this.spriteHeight+this.trim.bottom;
-					this.velocity.y = 0;
+				//this.x+= this.platform.x-this.platform.prevPos.x;
+				if (this.platform.stickyY) {
+					this.y = this.platform.y-this.spriteHeight;
+					this.velocity.y = this.platform.velocity.y;
+				}
+				if (this.platform.stickyX) {
+					this.x += this.platform.x-this.platform.prevPos.x;
 				}
 				if (this.x>=this.platform.x+this.platform.spriteWidth || this.x+this.spriteWidth<=this.platform.x || this.velocity.y<0) {
 					this.platform=null;
@@ -223,6 +226,9 @@
 			}
 			if (e.type=="map" && (e.right || e.left)) {
 				this.velocity.x = - e.velocity.x*this.bounce;
+			}
+			if (e.type=="Barrel" && e.bottom) {
+				this.platform = e.obj;
 			}
 	
 		

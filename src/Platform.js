@@ -1,137 +1,71 @@
 (function() {
-	//AKA TileGroup
-	/*
-	 * This could extend sprite... but this may be cheaper for now
-	 */
-	function Platform(x, y,tWidth,tHeight,images,data) {
-		this.width = data[0].length*tWidth;
-		this.height = data.length*tHeight;
-		
-		this.buffer = document.createElement('canvas');
-		this.buffer.width = this.width;
-		this.buffer.height = this.height;
-		
-		//draw buffer
-		this.context = this.buffer.getContext("2d");
-		for (var r=0;r<data.length;r++) {
-			for(var c=0;c<data[r].length;c++) {
-				var tileNum = data[r][c];
-				this.context.drawImage(images, tileNum*tWidth ,0,
-					tWidth, tHeight, 
-					c*tWidth, tHeight*r,tWidth,tHeight);
-			}
-		}
-		this.id = 0;
-		this.x = x;
-		this.y = y;
-		this.mode = 0; //0 for to, 1 for from
-		
-		this.startPos = {x: x, y: y};
-		this.endPos = {x: x, y: y};
-		this.speed = {x:1.5, y:1.5};
-		this.stillTime = 1000;
-		this.bounds={left: this.x, right:this.x+this.width, top: this.y, bottom:this.y+this.height, x:this.x, y:this.y, width:this.width, height:this.height};
-		this.type = "Platform";
-		
-		this.currTime = 0;
-		
-		this.prevPos = {x: this.x, y: this.y};
-		this.spriteHeight = this.height;
-		this.spriteWidth = this.width;
-
-	}
 	
-	Platform.prototype = {
-		render:function() {
-			Scaffold.context.drawImage(this.buffer, this.x-Scaffold.camera.bounds.x, this.y-Scaffold.camera.bounds.y);
-		},
+	function Platform(x,y, spriteSheet, width, height, options) {
+		Sprite.call(this, x,y, spriteSheet, width, height, 12);
+		this.maxVelocity.x = 4;
+		this.type = "Platform";
+		this.moveable = false;
 		
-		update: function(t) {
-			this.prevPos = {x: this.x, y: this.y};
-			this.currTime+=t;
-			
-			if (this.currTime > this.stillTime) {
-				if (this.mode==0) {
-					//motion
-					if (this.y<this.endPos.y) {
-						this.y+=this.speed.y;
-						if (this.y>=this.endPos.y) {
-							this.y = this.endPos.y;
-						}
-					} else if (this.y>this.endPos.y) {
-						this.y-=this.speed.y;
-						if (this.y<=this.endPos.y) {
-							this.y = this.endPos.y;
+		this.direction = {x:0, y:0};
+		this.gravity = 0;
 
-						}
-					}
-					
-					//motion x
-					if (this.x<this.endPos.x) {
-						this.x+=this.speed.x;
-						if (this.x>=this.endPos.x) {
-							this.x = this.endPos.x;
-						}
-					} else if (this.x>this.endPos.x) {
-						this.x-=this.speed.x;
-						if (this.x>=this.endPos.x) {
-							this.x = this.endPos.x;
-						}
-					}
-					
-					if (this.x==this.endPos.x && this.y==this.endPos.y) {
-						this.currTime = 0;
-						this.mode = 1;
-					}
-					
-				} else {
-					//motion
-					if (this.y<this.startPos.y) {
-						this.y+=this.speed.y;
-						if (this.y>=this.startPos.y) {
-							this.y = this.startPos.y;
+		this.minX = (options.minX)? options.minX:null;
+		this.maxX = (options.maxX)? options.maxX:null;
+		this.maxY = (options.maxY)? options.maxY:null;
+		this.minY = (options.minY)? options.minY:null;
 
-						}
-					} else if (this.y>this.startPos.y) {
-						this.y-=this.speed.y;
-						if (this.y<=this.startPos.y) {
-							this.y = this.startPos.y;
-
-						}
-					}
-					
-					//motion x
-					if (this.x<this.startPos.x) {
-						this.x+=this.speed.x;
-						if (this.x>=this.startPos.x) {
-							this.x = this.startPos.x;
-						}
-					} else if (this.x>this.startPos.x) {
-						this.x-=this.speed.x;
-						if (this.x<=this.startPos.x) {
-							this.x = this.startPos.x;
-						}
-					}
-					
-					if (this.x==this.startPos.x && this.y==this.startPos.y) {
-						this.currTime = 0;
-						this.mode = 0;
-					}
-				}
-
-			}
-			this.bounds={left: this.x, right:this.x+this.width, top: this.y, bottom:this.y+this.height, x:this.x, y:this.y, width:this.width, height:this.height};
-			
-		},
+		this.stickyY = false;
+		this.stickyX = false;
+		this.speed = (options.speed)? options.speed:0;
 		
-		setEndPos: function(px,py) {
-			this.endX = x;
-			this.endY = y;
+		this.pseudoPhysics = (options.pseudoPhysics)? options.pseudoPhysics : true;
+		
+		
+		if (this.x<= this.minX) {
+			this.direction.x = 1;
+		} else if (this.x<=this.maxX) {
+			this.direction.x = -1;
 		}
-		
-
+		if (this.y<=this.minY) {
+			this.direction.y=1;
+		} else if (this.y>=this.maxY) {
+			this.direction.y=-1;
+		}
 	}
 	
 	self.Platform = Platform;
+	Platform.prototype = new Sprite();
 	
-})();
+	
+	Platform.prototype.update = function(t) {
+		if (this.maxY && this. minY) {
+			if (this.pseudoPhysics) {
+				this.velocity.y += this.speed*this.direction.y;
+			} else {
+				this.y += this.speed*this.direction.y;
+			}
+			if (this.y<this.minY && this.direction.y==-1) {
+				this.direction.y = 1;
+				this.y = this.minY;
+			} else if (this.y>=this.maxY && this.direction.y==1) {
+				this.direction.y = -1;
+				this.y = this.maxY;
+			}
+		}
+		if (this.maxX && this.minX) {
+			if (this.pseudoPhysics) {
+				this.velocity.x+=this.speed*this.direction.x;
+			} else {
+				this.x += this.speed*this.direction.x;
+			}
+			if (this.direction.x==1 && this.x>=this.maxX) {
+				this.direction.x=-1; this.x = this.maxX;
+			} else if (this.direction.x==-1 && this.x <= this.minX) {
+				this.direction.x=1; this.x = this.minX;
+			}
+		}
+	
+		Sprite.prototype.update.call(this, t);
+	}
+	
+})()

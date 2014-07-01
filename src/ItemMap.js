@@ -33,7 +33,9 @@
 					gid = json.tilesets[i].firstgid;
 					total = gid + (json.tilesets[i].imagewidth / json.tilesets[i].tilewidth) * (json.tilesets[i].imageheight/json.tilesets[i].tileheight);
 					while(gid < total) {
-						json.gidCache[gid] = {height: json.tilesets[i].tileheight, width: json.tilesets[i].tilewidth};
+						json.gidCache[gid] = json.tilesets[i];
+						json.gidCache[gid].height = json.tilesets[i].tileheight;
+						json.gidCache[gid].width = json.tilesets[i].tilewidth;
 						gid++;
 					} // end gid
 				} //end i
@@ -80,6 +82,7 @@
 			
 		},
 		
+		
 		update: function(t) {
 			
 			var i=this.map.length;
@@ -88,7 +91,7 @@
 			while(i--) {
 				//console.log(i + " " + this.map.length);
 				overlap = Scaffold.getOverlap(Scaffold.camera.bounds,this.map[i].bounds);
-				if (overlap>0) {
+				if (overlap.total>0) {
 					if (!this.callback) {
 						this.group.add(new window[this.spriteClassName](this.map[i].bounds.x, this.map[i].bounds.y));
 					} else {
