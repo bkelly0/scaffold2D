@@ -237,6 +237,27 @@ SOFTWARE.
 		var overlap = 0;
 		var tolerance = diffTotal + Scaffold.timeScale*2;
 		
+		var diffA = spA.x - spA.prevPos.x;
+		var diffB = spB.x - spB.prevPos.x;
+		var diffTotal = Math.abs(diffA) + Math.abs(diffB);
+		var overlap = 0;
+		var tolerance = diffTotal + Scaffold.timeScale*2;
+		
+		if (diffA > diffB) {
+			overlap = spA.x + spA.spriteWidth - spB.x;
+			if (overlap > tolerance) {
+				return;
+			}
+		} else if (diffA < diffB) {
+			overlap = spA.x - spB.spriteWidth - spB.x;
+			if (-overlap > tolerance) {
+				return;
+			}
+		} else {
+			return;
+		}
+		
+			
 		if (diffA > diffB) {
 			overlap = spA.x + spA.spriteWidth - spB.x;
 			if (overlap > tolerance) {
@@ -301,6 +322,7 @@ SOFTWARE.
 		
 		if (!spA.moveable || spA.locked.top) {
 			spB.y += overlap;
+			spB.y = spA.y+spA.spriteHeight;
 			spB.velocity.y *=-spB.bounce;
 		} else if (!spB.moveable || spB.locked.bottom) {
 			spA.y -= overlap;
@@ -332,6 +354,10 @@ SOFTWARE.
 			if (spA.solidCollide && spB.solidCollide) {
 				Scaffold.resolveY(spA, spB);
 				Scaffold.resolveX(spA, spB);
+				var pp = spA.pseudoPhysics && spB.pseudoPhysics;
+				Scaffold.resolveY(spA, spB);
+				Scaffold.resolveX(spA, spB);
+
 			}
 			
 			//Do A
