@@ -17,7 +17,7 @@
 		}
 		this.collideIndex = 3;
 		this.emptyTile = null;
-		this.paralax = 1;
+		this.parallax = 1;
 		
 		this.framePositions = [];
 		var cx=0;
@@ -129,13 +129,13 @@
 			var x, y, tileNum = 0;
 			var t = this;
 			
-			var firstRow = Scaffold.camera.bounds.y*this.paralax / this.tileHeight >> 0; //bitwise floor
+			var firstRow = Scaffold.camera.bounds.y*this.parallax / this.tileHeight >> 0; //bitwise floor
 			var lastRow = Math.ceil(firstRow + Scaffold.camera.bounds.height / this.tileHeight)+1;
 			if (lastRow > t.mapArray.length) {
 				lastRow = t.mapArray.length;
 			}
 			
-			var firstCol =Scaffold.camera.bounds.x*this.paralax / this.tileWidth >> 0;
+			var firstCol =Scaffold.camera.bounds.x*this.parallax / this.tileWidth >> 0;
 			var lastCol = Math.ceil(firstCol + Scaffold.camera.bounds.width / this.tileWidth)+1;
 			if (lastCol>t.mapArray[0].length) {
 				lastCol = t.mapArray[0].length;
@@ -158,16 +158,16 @@
 						this.tileAddedListeners[k]({'row':i, 'col':j});
 					}
 					
-					if (tileNum!=this.emptyTile && tileNum < this.framePositions.length) {
+					if (tileNum>=0 && tileNum!=this.emptyTile && tileNum < this.framePositions.length) {
 						if (Scaffold.renderMode==1) {
 							//canvas
 							Scaffold.renderer.context.drawImage(t.tileImages, this.framePositions[tileNum].x , this.framePositions[tileNum].y,
 								t.tileWidth, t.tileHeight, 
-								t.tileWidth*j-(Scaffold.camera.bounds.x*this.paralax), t.tileHeight*i-(Scaffold.camera.bounds.y*this.paralax),t.tileWidth,t.tileHeight);
+								t.tileWidth*j-(Scaffold.camera.bounds.x*this.parallax), t.tileHeight*i-(Scaffold.camera.bounds.y*this.parallax),t.tileWidth,t.tileHeight);
 						} else {
 							//webgl
-							var x1 = t.tileWidth*j-(Scaffold.camera.bounds.x*this.paralax);
-							var y1 = t.tileHeight*i-(Scaffold.camera.bounds.y*this.paralax);
+							var x1 = t.tileWidth*j-(Scaffold.camera.bounds.x*this.parallax);
+							var y1 = t.tileHeight*i-(Scaffold.camera.bounds.y*this.parallax);
 							var x2 = x1+this.tileWidth;
 							var y2 = y1+this.tileHeight;
 							
@@ -240,15 +240,14 @@
 				return null;
 			}
 			
-			if (sp.x!=sp.prevPos.x) {
-				sp.locked.left = 0;
+			if (sp.prevPos.x!=sp.x) {
 				sp.locked.right = 0;
-			}
-			if (sp.y != sp.prevPos.y) {
+				sp.locked.left = 0;
+			} 
+			if (sp.prevPos.y!=sp.y) {
 				sp.locked.top = 0;
 				sp.locked.bottom = 0;
 			}
-			
 			//console.log(this.mapArray[0].length);
 			
 			//check surrounding tiles
@@ -351,6 +350,7 @@
 							sp.y = tileBounds.y + this.tileHeight-sp.trim.top;
 							e.top = 1;
 							sp.velocity.y = 0;
+							sp.historyY = -1;
 							sp.locked.top = 1;
 						} 
 						return e;
@@ -362,7 +362,6 @@
 							e.left = 1;
 							sp.velocity.x = 0;
 							sp.locked.left = 1;
-
 						} else if (sp.prevPos.x+sp.spriteWidth-sp.trim.right <= tileBounds.x+(this.tileWidth/2)) {
 							sp.x = tileBounds.x - sp.spriteWidth+sp.trim.right;
 							e.right = 1;
