@@ -147,6 +147,7 @@
 			if (firstCol < 0) firstCol = 0;
 			
 			var positions =[];
+			var lastPosition;
 		
 		
 			for (var i=firstRow; i< lastRow; i++) {
@@ -170,9 +171,19 @@
 							var y1 = t.tileHeight*i-(Scaffold.camera.bounds.y*this.parallax);
 							var x2 = x1+this.tileWidth;
 							var y2 = y1+this.tileHeight;
+							//connecting strip
+							if (lastPosition) {
+								positions[positions.length]= lastPosition.x;
+								positions[positions.length]= lastPosition.y;
+								positions[positions.length]= 0;
+								positions[positions.length]= 0;
+								positions[positions.length]= x1;
+								positions[positions.length]= y1;
+								positions[positions.length]= 0;
+								positions[positions.length]= 0;
+							}
 							
-							//"fast" push
-						
+							//draw tile
 							positions[positions.length]=x1; 
 							positions[positions.length]=y1;
 							positions[positions.length]=this.framePositions[tileNum].tx1; 
@@ -193,11 +204,8 @@
 							positions[positions.length]=this.framePositions[tileNum].tx2; 
 							positions[positions.length]= this.framePositions[tileNum].ty2;
 							
-							//hide connecting strip
-							positions[positions.length]=x2; 
-							positions[positions.length]=y2;
-					    	positions[positions.length]=0;
-					    	positions[positions.length]=0;
+							lastPosition = {x: x2, y:y2};
+							
 					    						    	
 						} //end else
 					
