@@ -6,5 +6,7 @@ buildNumber=`git rev-list HEAD --count`
 echo "Version: 1.0.$buildNumber"
 sed -i "" "s/%buildNumber%/$buildNumber/g" dist/Scaffold.min.js
 cp dist/Scaffold.min.js demos/quadTree/js/
+cp dist/Scaffold.min.js demos/parallax/js/
+cp dist/Scaffold.min.js demos/platforms/js/
 
 

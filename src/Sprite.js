@@ -1,5 +1,9 @@
 (function() {
-	function Sprite(x, y, spriteSheet, sw, sh, fps) {
+	function Sprite(x, y, spriteSheet, sw, sh, fps, options) {
+		if (!options) {
+			options = {enableFlipping:true};
+		}
+		
 		this.x = x || 0;
 		this.y = y || 0;
 		this.prevPos = {x:x, y:y};
@@ -73,6 +77,11 @@
 					this.texture = Scaffold.renderer.textures[this.images.src];
 				}
 			}
+			
+			if (Scaffold.renderMode==1 && options.enableFlipping!=false) {
+				this.enableFlipping();
+			}
+			
 	}
 	
 	Sprite.prototype = {
@@ -227,7 +236,7 @@
 			if (e.type=="map" && (e.right || e.left)) {
 				this.velocity.x = - e.velocity.x*this.bounce;
 			}
-			if (e.type=="Barrel" && e.bottom) {
+			if (e.type=="Platform" && e.bottom) {
 				this.platform = e.obj;
 			}
 	
