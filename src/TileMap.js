@@ -22,6 +22,10 @@
 		this.framePositions = [];
 		var cx=0;
 		var cy=0;
+		
+		this.lastRenderData;
+		this.prevTiles = {firstCol:0, lastCol:0, firstRow:0, lastRow:0};
+		this.lastStartPoint;
 			
 		if (Scaffold.renderMode==1) {
 			//canvas positions
@@ -148,8 +152,42 @@
 			
 			var positions =[];
 			var lastPosition;
-		
-		
+
+			
+			//redraw previous data with a translation - No new tiles
+			if (this.lastRenderData && firstRow==this.prevTiles.firstRow && firstCol == this.prevTiles.firstCol) {
+				var tx = (this.tileWidth*firstCol-(Scaffold.camera.bounds.x*this.parallax) - this.lastStartPoint.x) / Scaffold.camera.bounds.width;
+				var ty = (this.tileHeight*firstRow-(Scaffold.camera.bounds.y*this.parallax) - this.lastStartPoint.y) / Scaffold.camera.bounds.height;
+				Scaffold.renderer.draw(new Float32Array(this.lastRenderData), this.texture, {x:tx, y:-ty});
+				
+				return;
+			} /*else if(this.lastRenderData) {
+				var colDiff = this.prevTiles.firstCol - firstCol;
+				var numCols = lastCol - firstCol;
+				if (colDiff<0) {
+					//remove left column
+					var removed  = 0;
+					for (var i=0; i<this.lastRenderData.length;i+= numCols*24) {
+						this.lastRenderData.splice(i-removed,24);
+						removed+=24;
+					}
+					//add right column
+					var cy=this.lastRenderData[this.lastRenderData.length-8];
+				} else if (colDiff>0) {
+					
+				}
+				//return;
+			}
+			*/
+			
+		    //Draw All of the tiles 
+			this.prevTiles.firstRow = firstRow;
+			this.prevTiles.lastRow = lastRow;
+			this.prevTiles.firstCol = firstCol;
+			this.prevTiles.lastCol = lastCol;
+			this.lastStartPoint = null;
+
+			
 			for (var i=firstRow; i< lastRow; i++) {
 				for (var j=firstCol; j<lastCol;j++) {
 					tileNum = t.mapArray[i][j];
@@ -158,6 +196,9 @@
 					for(var k=0;k<this.tileAddedListeners.length;k++) {
 						this.tileAddedListeners[k]({'row':i, 'col':j});
 					}
+					
+					if (!this.lastStartPoint)
+						this.lastStartPoint = {x:t.tileWidth*j-(Scaffold.camera.bounds.x*this.parallax), y: t.tileHeight*i-(Scaffold.camera.bounds.y*this.parallax) };
 					
 					if (tileNum>=0 && tileNum!=this.emptyTile && tileNum < this.framePositions.length) {
 						if (Scaffold.renderMode==1) {
@@ -171,6 +212,7 @@
 							var y1 = t.tileHeight*i-(Scaffold.camera.bounds.y*this.parallax);
 							var x2 = x1+this.tileWidth;
 							var y2 = y1+this.tileHeight;
+							
 							//connecting strip
 							if (lastPosition) {
 								positions[positions.length]= lastPosition.x;
@@ -183,7 +225,9 @@
 								positions[positions.length]= 0;
 							}
 							
-							//draw tile
+							if (x1==0) {
+								//console.log(positions.length);
+							}
 							positions[positions.length]=x1; 
 							positions[positions.length]=y1;
 							positions[positions.length]=this.framePositions[tileNum].tx1; 
@@ -205,7 +249,7 @@
 							positions[positions.length]= this.framePositions[tileNum].ty2;
 							
 							lastPosition = {x: x2, y:y2};
-							
+
 					    						    	
 						} //end else
 					
@@ -214,9 +258,10 @@
 				} 
 
 			} //end outer loop
-	
 			if (Scaffold.renderMode==0) {
-				Scaffold.renderer.draw(new Float32Array(positions),this.texture);
+			
+				Scaffold.renderer.draw(new Float32Array(positions) ,this.texture);
+				this.lastRenderData = positions;				
 			}
 
 		},

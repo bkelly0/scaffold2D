@@ -13,9 +13,9 @@
 	    var shaderSrc = [];
 	    shaderSrc[0] = "attribute vec4 aPosition;";
 	    shaderSrc[1] = "varying vec2 vTexCoord;";
-	    shaderSrc[2] = "uniform vec2 uResolution; uniform bool useImageTexture;";
+	    shaderSrc[2] = "uniform vec2 uResolution; uniform bool useImageTexture; uniform vec2 uTranslation;";
 	    shaderSrc[3] = "void main(void) {";
-	    shaderSrc[4] = "    vTexCoord = aPosition.zw;vec2 zeroToOne = aPosition.xy / uResolution; vec2 zeroToTwo = zeroToOne * 2.0;vec2 clipSpace = zeroToTwo - 1.0;gl_Position.zw = vec2(1.0, 1.0);gl_Position.xy = vec2(clipSpace * vec2(1, -1));"
+	    shaderSrc[4] = "    vTexCoord = aPosition.zw;vec2 zeroToOne = aPosition.xy / uResolution; vec2 zeroToTwo = zeroToOne * 2.0;vec2 clipSpace = zeroToTwo - 1.0;gl_Position.zw = vec2(1.0, 1.0);gl_Position.xy = vec2(clipSpace * vec2(1, -1) + uTranslation*vec2(2,2));"
 		shaderSrc[5] = "}";
 		var shaderSrcStr = shaderSrc.join("\n");
 		
@@ -57,6 +57,8 @@
 	    this.program.samplerUniform = this.gl.getUniformLocation(this.program, "sTexture");
 	    this.program.useImageTextureUniform = this.gl.getUniformLocation(this.program,"useImageTexture");
 	    this.program.colorUniform = this.gl.getUniformLocation(this.program,"uColor");
+	    this.program.translateUniform = this.gl.getUniformLocation(this.program, "uTranslation");
+
 
 	    this.gl.enableVertexAttribArray(this.program.positionAttribute);
 	
@@ -65,6 +67,9 @@
 	  	this.gl.uniform2f(this.gl.getUniformLocation(this.program, "uResolution"), canvas.width/Scaffold.scale, canvas.height/Scaffold.scale);
 		//set to use image
 		this.gl.uniform1i(this.program.useImageTextureUniform, true);
+		//set default translate
+		this.gl.uniform2f(this.program.translateUniform, 0, 0);
+
 	
 	    this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 	    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -73,6 +78,7 @@
 	    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 	    
 	    this.buffer = this.gl.createBuffer();
+	    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
 	}
 	
 	RendererGL.prototype = {
@@ -84,7 +90,14 @@
 		},
 
 		
-		draw: function(pos, tex) {
+		draw: function(pos, tex, translation) {
+			
+			if (!translation)
+				translation = {x:0,y:0};
+				
+			this.gl.uniform2f(this.program.translateUniform, translation.x, translation.y);
+
+			
 		    //supplied with positioning data for the object and texture
 		    this.gl.activeTexture(this.gl.TEXTURE0);
 
@@ -94,9 +107,7 @@
 
 		    
 		    this.gl.uniform1i(this.program.samplerUniform, 0);
-		    
-		    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-		    
+		    		    
 		    this.buffer.itemSize = 4;
 		    this.buffer.numItems = pos.length/this.buffer.itemSize;
 		
