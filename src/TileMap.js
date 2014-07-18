@@ -26,6 +26,15 @@
 		this.lastRenderData;
 		this.prevTiles = {firstCol:0, lastCol:0, firstRow:0, lastRow:0};
 		this.lastStartPoint;
+		this.currRenderIndexes = []; //a lookup for row/col render indexes
+		this.lastPosition;
+		
+		this.renderData = [];
+		this.numRenderRows;
+		this.numRenderCols;
+		this.translation = {x:0, y:0};
+		this.renderOffset = {x:0, y:0};
+		this.emptyRow = [];
 			
 		if (Scaffold.renderMode==1) {
 			//canvas positions
@@ -84,6 +93,7 @@
 			this.width = this.mapArray[0].length * this.tileWidth;
 			this.height = this.mapArray.length * this.tileHeight-this.tileHeight;
 			
+			this.numRenderCols
 		},
 		
 		setDataFromJSON: function(dat) {
@@ -101,6 +111,11 @@
 			}
 			this.width = this.mapArray[0].length * this.tileWidth;
 			this.height = this.mapArray.length * this.tileHeight;
+			
+			this.numRenderRows = Math.ceil(Scaffold.camera.bounds.height / this.tileHeight)+1;
+			this.numRenderCols = Math.ceil(Scaffold.camera.bounds.width / this.tileWidth)+1;
+			this.emptyRow = new Array(24*(this.numRenderCols));
+			console.log("rows: " + this.numRenderRows + " cols: " + this.numRenderCols);
 		},
 		
 		mapLoaded: function(data) {
@@ -125,7 +140,275 @@
 			this.tileAddedListeners.push(fnc);
 		},
 		
+		addRowData: function(rowIndex, dataRowIndex, dataColIndex, colDiff) {
+			var index = rowIndex*this.numRenderCols*24-8;
+			if (index<0) index=0;
+						
+			var tileNum, x1, y1, x2, y2, tx1, tx2, ty1, ty2;
+			var positions = this.renderData;
+			var lastPos = {x:0,y:0};
+			
+			if (rowIndex>0) {
+				lastPos.x = positions[index-4];
+				lastPos.y = positions[index-3];
+			}
+			
+			//when the column is also changed
+			dataColIndex += colDiff;
+			var colShift = colDiff*this.tileWidth;
+			
+			for (var i=0; i< this.numRenderCols; i++) {
+				tileNum = this.mapArray[dataRowIndex][dataColIndex + i];
+				
+				if (tileNum>=0 && tileNum!=this.emptyTile && tileNum < this.framePositions.length) {
+					//positions
+					x1 = this.tileWidth*i + this.renderOffset.x+colShift;
+					y1 = this.tileHeight*rowIndex + this.renderOffset.y;
+					x2 = x1+this.tileWidth;
+					y2 = y1+this.tileHeight;
+					//texture
+					tx1 =this.framePositions[tileNum].tx1; 
+					ty1 =this.framePositions[tileNum].ty1;
+					tx2 =this.framePositions[tileNum].tx2; 
+					ty2 = this.framePositions[tileNum].ty2;
+				} else {
+					x1 = y1 = x2 = y2 = tx1 = tx2 = ty1 = ty2 = 0;
+				}
+				
+
+				if (rowIndex!=0 && i!=0 || i>0 || rowIndex>0) {
+					positions[index++]= lastPos.x;
+					positions[index++]= lastPos.y;
+					positions[index++]= 0;
+					positions[index++]= 0;
+					positions[index++]= x1;
+					positions[index++]= y1;
+					positions[index++]= 0;
+					positions[index++]= 0;
+				} 
+					
+					positions[index++]=x1; 
+					positions[index++]=y1;
+					positions[index++]=tx1;
+					positions[index++]= ty1;
+							
+					positions[index++]=x2; 
+					positions[index++]=y1;
+					positions[index++]=tx2;
+					positions[index++]=ty1;
+						
+					positions[index++]=x1; 
+					positions[index++]=y2;
+					positions[index++]=tx1;
+					positions[index++]=ty2;
+
+					positions[index++]=x2; 
+					positions[index++]=y2;
+					positions[index++]=tx2;
+					positions[index++]=ty2;
+					lastPos.x = x2;
+					lastPos.y = y2;
+			
+			}
+			this.renderData = positions;
+		},
+		
+		addColumnData: function(colIndex, dataRowIndex, dataColIndex) {
+			var index, tileNum, x1, y1, x2, y2, tx1, tx2, ty1, ty2;
+			var lastPos = {x:0, y:0};
+			var positions = this.renderData;
+
+			
+			index = 24*colIndex-8;
+			if (index<0) index = 0;
+			for (var i = 0; i<this.numRenderRows; i++) {		
+				if (this.mapArray[dataRowIndex+i]==undefined) {
+					//console.log(dataRowIndex+i);
+					//console.log(this.mapArray);
+				}
+				if (dataRowIndex+i<this.mapArray.length) {
+					tileNum = this.mapArray[dataRowIndex+i][dataColIndex];
+				} else {
+					tileNum = 0;
+				}
+				if (dataColIndex==0 && i==0) {
+					index = 0;
+				} 
+				if (tileNum>=0 && tileNum!=this.emptyTile && tileNum < this.framePositions.length) {
+					//positions
+					x1 = this.tileWidth*colIndex + this.renderOffset.x;
+					y1 = this.tileHeight*i + this.renderOffset.y;
+					x2 = x1+this.tileWidth;
+					y2 = y1+this.tileHeight;
+					//texture
+					tx1 =this.framePositions[tileNum].tx1; 
+					ty1 =this.framePositions[tileNum].ty1;
+					tx2 =this.framePositions[tileNum].tx2; 
+					ty2 = this.framePositions[tileNum].ty2;
+				} else {
+					x1 = y1 = x2 = y2 = tx1 = tx2 = ty1 = ty2 = 0;
+				}
+								
+				lastPos.x = positions[index-4];
+				lastPos.y = positions[index-3];
+				
+				if (index-4>=0) {
+					positions.splice(index,0, lastPos.x, lastPos.y, 0,0,x1,y1,0,0,x1,y1,tx1,ty1,x2,y1,tx2,ty1,x1,y2,tx1,ty2,x2,y2,tx2,ty2);
+					if (index+25 < positions.length) {
+						positions[index+24] = x2;
+						positions[index+25] = y2;
+					}
+				} else {
+					positions.splice(index,0,
+						x1,y1,tx1,ty1,
+						x2,y1,tx2,ty1,
+						x1,y2,tx1,ty2,
+						x2,y2,tx2,ty2,
+						x2,y2,0,0,x2+this.tileWidth, y2,0,0);
+				
+				}
+				if (index==0) {
+					index-=8;
+				} 
+				index+=24*this.numRenderCols;
+			}
+			this.renderData = positions;
+		},
+		
 		render: function() {
+			var rowAdded = false;
+			var colAdded = false;
+			if (this.mapArray.length==0) {
+				return;
+			}
+			
+			var firstRow = Scaffold.camera.bounds.y*this.parallax / this.tileHeight >> 0; //bitwise floor
+			var lastRow = Math.ceil(firstRow + Scaffold.camera.bounds.height / this.tileHeight)+1;
+			if (lastRow > this.mapArray.length) {
+				lastRow = this.mapArray.length;
+			}
+			
+			var firstCol =Scaffold.camera.bounds.x*this.parallax / this.tileWidth >> 0;
+			var lastCol = Math.ceil(firstCol + Scaffold.camera.bounds.width / this.tileWidth)+1;
+			if (lastCol>this.mapArray[0].length) {
+				lastCol = this.mapArray[0].length;
+			}
+			
+			
+			
+			if (firstRow < 0) firstRow = 0;
+			
+			if (firstCol < 0) firstCol = 0;
+			
+			
+			if (Scaffold.renderMode==1) {
+				//Canvas
+				for (var i=firstRow; i< lastRow; i++) {
+					for (var j=firstCol; j<lastCol;j++) {
+						tileNum = this.mapArray[i][j];
+						Scaffold.renderer.context.drawImage(this.tileImages, this.framePositions[tileNum].x , this.framePositions[tileNum].y,
+								this.tileWidth, this.tileHeight, 
+								this.tileWidth*j-(Scaffold.camera.bounds.x*this.parallax), this.tileHeight*i-(Scaffold.camera.bounds.y*this.parallax),this.tileWidth,this.tileHeight);
+					}
+				}
+				
+			} else {
+				
+				//GL
+
+				if (this.renderData.length==0) {
+					//all all of the tiles
+					
+					for (var i=0; i<this.numRenderRows;i++) {
+						this.addRowData(i, firstRow+i, firstCol,0);
+					}
+					
+				} else {
+					//check for row changes
+					var rowDiff = this.prevTiles.firstRow - firstRow;
+					var colDiff = this.prevTiles.firstCol - firstCol;
+					if (rowDiff>0) {
+						this.renderOffset.y -= this.tileHeight;
+					} else if (rowDiff<0) {
+						this.renderOffset.y += this.tileHeight;
+					}
+					if (colDiff>0) {
+						this.renderOffset.x -= this.tileWidth;
+					} else if (colDiff<0) {
+						this.renderOffset.x += this.tileWidth;
+					}
+
+					if (rowDiff>0) {
+						//remove bottom row
+						var index = (this.numRenderRows-1)*this.numRenderCols*24-8;
+						this.renderData.splice(index,24*this.numRenderCols);
+						var empty = new Array(24*(this.numRenderCols));
+						this.renderData = empty.concat(this.renderData);
+						this.addRowData(0, firstRow, firstCol, colDiff);
+						rowAdded = true;
+					} else if (rowDiff<0) {	
+						//remove top row
+						this.renderData.splice(0,24*this.numRenderCols); //no -8, need to take the connecting strip from the new first element
+						//add new bottom row
+						this.addRowData(this.numRenderRows-1, lastRow-1, firstCol, colDiff);
+						rowAdded = true;
+					}
+
+					if (colDiff<0) {
+						//remove first col
+						var index = 0;
+						var diffX = 0;
+						for (var i=0; i<this.numRenderRows; i++) {
+							if (i==0) {
+								this.renderData.splice(index,24);
+								index=i*this.numRenderCols*24-8;
+							} else {
+								index+= this.numRenderCols*24-24;
+								this.renderData.splice(index,24);
+							}
+						}
+						this.addColumnData(this.numRenderCols-1,firstRow, lastCol-1);
+						colAdded = true;
+					} else if (colDiff>0) {
+
+						//remove last col
+						var index = (this.numRenderCols-1)*24-8;
+						for (var i=0; i<this.numRenderRows; i++) {
+							this.renderData.splice(index,24);
+							index+=this.numRenderCols*24-24;
+						}
+						this.addColumnData(0,firstRow, firstCol);
+						colAdded = true;
+
+					}
+					
+				
+				}
+				var diffY = 0;
+				var diffX = 0;	
+
+				diffX = this.tileWidth * (firstCol - Scaffold.camera.bounds.x*this.parallax / this.tileWidth);
+				diffY = this.tileHeight * (firstRow - Scaffold.camera.bounds.y*this.parallax / this.tileHeight);
+				this.translation.x = -(this.renderOffset.x-diffX)/Scaffold.camera.bounds.width;
+				this.translation.y = (this.renderOffset.y-diffY)/Scaffold.camera.bounds.height;
+							
+				Scaffold.renderer.draw(new Float32Array(this.renderData), this.texture, this.translation);
+				
+				this.prevTiles.firstRow = firstRow;
+				this.prevTiles.lastRow = lastRow;
+				this.prevTiles.firstCol = firstCol;
+				this.prevTiles.lastCol = lastCol;
+			}
+			
+
+		},
+		
+		dataAudit: function() {
+			
+		},
+		
+		renderOld: function() {
+			return;
 			if (this.mapArray.length==0) {
 				return;
 			}
@@ -151,47 +434,15 @@
 			if (firstCol < 0) firstCol = 0;
 			
 			var positions =[];
-			var lastPosition;
 
-			
-			//redraw previous data with a translation - No new tiles
-			if (this.lastRenderData && firstRow==this.prevTiles.firstRow && firstCol == this.prevTiles.firstCol) {
-				var tx = (this.tileWidth*firstCol-(Scaffold.camera.bounds.x*this.parallax) - this.lastStartPoint.x) / Scaffold.camera.bounds.width;
-				var ty = (this.tileHeight*firstRow-(Scaffold.camera.bounds.y*this.parallax) - this.lastStartPoint.y) / Scaffold.camera.bounds.height;
-				Scaffold.renderer.draw(new Float32Array(this.lastRenderData), this.texture, {x:tx, y:-ty});
 				
-				return;
-			} /*else if(this.lastRenderData) {
-				var colDiff = this.prevTiles.firstCol - firstCol;
-				var numCols = lastCol - firstCol;
-				if (colDiff<0) {
-					//remove left column
-					var removed  = 0;
-					for (var i=0; i<this.lastRenderData.length;i+= numCols*24) {
-						this.lastRenderData.splice(i-removed,24);
-						removed+=24;
-					}
-					//add right column
-					var cy=this.lastRenderData[this.lastRenderData.length-8];
-				} else if (colDiff>0) {
-					
-				}
-				//return;
-			}
-			*/
-			
-		    //Draw All of the tiles 
-			this.prevTiles.firstRow = firstRow;
-			this.prevTiles.lastRow = lastRow;
-			this.prevTiles.firstCol = firstCol;
-			this.prevTiles.lastCol = lastCol;
-			this.lastStartPoint = null;
-
-			
+			//this.currRenderIndexes = [];
 			for (var i=firstRow; i< lastRow; i++) {
+				this.currRenderIndexes[currRow] = [];
+				
 				for (var j=firstCol; j<lastCol;j++) {
 					tileNum = t.mapArray[i][j];
-	
+					
 					
 					for(var k=0;k<this.tileAddedListeners.length;k++) {
 						this.tileAddedListeners[k]({'row':i, 'col':j});
@@ -212,11 +463,11 @@
 							var y1 = t.tileHeight*i-(Scaffold.camera.bounds.y*this.parallax);
 							var x2 = x1+this.tileWidth;
 							var y2 = y1+this.tileHeight;
-							
+														
 							//connecting strip
-							if (lastPosition) {
-								positions[positions.length]= lastPosition.x;
-								positions[positions.length]= lastPosition.y;
+							if (this.lastPosition) {
+								positions[positions.length]= this.lastPosition.x;
+								positions[positions.length]= this.lastPosition.y;
 								positions[positions.length]= 0;
 								positions[positions.length]= 0;
 								positions[positions.length]= x1;
@@ -225,9 +476,8 @@
 								positions[positions.length]= 0;
 							}
 							
-							if (x1==0) {
-								//console.log(positions.length);
-							}
+							this.currRenderIndexes[currRow][this.currRenderIndexes[currRow].length] = positions.length; //make it easier to look up indexes for rows/cols if needed
+							
 							positions[positions.length]=x1; 
 							positions[positions.length]=y1;
 							positions[positions.length]=this.framePositions[tileNum].tx1; 
@@ -248,20 +498,18 @@
 							positions[positions.length]=this.framePositions[tileNum].tx2; 
 							positions[positions.length]= this.framePositions[tileNum].ty2;
 							
-							lastPosition = {x: x2, y:y2};
-
-					    						    	
+							this.lastPosition = {x: x2, y:y2};
+							addedCount++;
+							
 						} //end else
 					
 					} 
-					
 				} 
-
+				currRow ++;
 			} //end outer loop
 			if (Scaffold.renderMode==0) {
-			
-				Scaffold.renderer.draw(new Float32Array(positions) ,this.texture);
-				this.lastRenderData = positions;				
+				Scaffold.renderer.draw(new Float32Array(positions) ,this.texture, translation);
+				this.lastRenderData = positions;
 			}
 
 		},

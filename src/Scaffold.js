@@ -48,6 +48,7 @@ SOFTWARE.
 	Scaffold.renderMode = 0; //0 = webgl 1 = canvas
 	Scaffold.scale = 1;
 	Scaffold.timeScale = 1;
+	Scaffold.maxTimeScale = 2.5;
 	Scaffold.soundAvailable = false;
 	Scaffold.canvasFallback = true;
 	
@@ -136,6 +137,9 @@ SOFTWARE.
 	    if (Scaffold.lastTime==0) elapsedTime = 16;
 	    
 	    Scaffold.timeScale = elapsedTime/16; //percentage based on 60 fps
+	    if (Scaffold.timeScale > Scaffold.maxTimeScale) {
+	    	Scaffold.timeScale = Scaffold.maxTimeScale;
+	    }
 	    Scaffold.lastTime = d;
 
 	  
