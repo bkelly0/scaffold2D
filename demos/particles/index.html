@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+    <script src="js/Scaffold.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/TestState.js"></script>
+    <script type="text/javascript" src="js/Particle.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
+  	
+  	<style>
+  		#glwarning {
+            background-color:#FF0000;
+            padding:10px 10px 10px 10px;
+            text-align:center;
+            display:none;
+            height:auto;
+        }
+  	</style>
+    <script>
+
+            $(document).ready(function() {
+                Scaffold.gravity = .4; 
+                Scaffold.scale = 1;
+                Scaffold.init($('#myCanvas')[0]);
+                
+                if (Scaffold.renderMode == 1) {
+                	$('#glwarning').css('display','block');
+                }
+                
+                //load all assets here
+                var assets = [
+                    'images/particle.png'
+                ];
+                Scaffold.loader = new Loader(assets, assetsLoaded);
+                
+                //for the slide control
+                $('#delay').change(function() {
+                    Scaffold.state.emitter.interval = $(this).val();
+                    $('#delayValue').html($(this).val());
+                });
+            });
+            
+            function assetsLoaded() {
+                console.log("loaded");
+                //create state
+                Scaffold.state = new TestState();
+                Scaffold.run();
+                
+            }
+            
+    </script>
+</head>
+
+
+<body>
+	 <div id="glwarning">Your browser does not support WebGL or it is disabled. ScaffoldJS is falling back to canvas render mode. Please enable WebGL for best performance. <a href="http://get.webgl.org/troubleshooting" target="_blank">http://get.webgl.org/troubleshooting</a></div>
+
+    <canvas id="myCanvas" width="800" height="400" style="background-color:#333333;"></canvas>
+    <div>
+    	MS Delay: <input type="range" step=".1" id="delay" min=".05" max="2" value="2"><span id="delayValue">2</span>
+    </div>
+</body>
+</html>

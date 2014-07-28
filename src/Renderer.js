@@ -4,6 +4,7 @@
 		this.textures = [];
     	
 	    this.gl = canvas.getContext("experimental-webgl");
+	    console.log(this.gl);
 	    if (!this.gl) return false;
 	  
 	    this.gl.viewportWidth = canvas.width;
@@ -220,6 +221,7 @@
 			var obj = new Object();
 			var lastVertex
 			var index;
+			var indexList = [];
 			
 			while(i--) {
 					//if they all share the same texture, they can be drawn at once
@@ -231,6 +233,7 @@
 				index = grp.members[i].texture.index;
 				if (!obj[index]) {
 					obj[index] = [];
+					indexList[indexList.length] = index;
 				}
 				
 				var spos = this.getRenderPositions(grp.members[i]);
@@ -260,9 +263,11 @@
 				obj[index][obj[index].length] = spos[14]; obj[index][obj[index].length] = spos[15];
 
 			} 
-			for (var texSrc in obj) {
-				this.draw(new Float32Array(obj[texSrc]), this.textures[texSrc]);
+			var j = indexList.length;
+			while(j--) {
+				this.draw(new Float32Array(obj[indexList[j]]), this.textures[indexList[j]]);
 			}
+			return;
 		},
 		
 		getRenderPositions: function(sp) {

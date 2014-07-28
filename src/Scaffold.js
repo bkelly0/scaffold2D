@@ -25,6 +25,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+var RenderModes = {WEBGL:0, CANVAS:1};
+var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 
 (function() {
 	
@@ -45,8 +47,9 @@ SOFTWARE.
 	Scaffold.data = {};
 	Scaffold.paused = false;
 	Scaffold.gamepads = [];
-	Scaffold.renderMode = 0; //0 = webgl 1 = canvas
+	Scaffold.renderMode = RenderModes.WEBGL;
 	Scaffold.scale = 1;
+	Scaffold.scaleMode = ScaleModes.CANVAS;
 	Scaffold.timeScale = 1;
 	Scaffold.maxTimeScale = 2.5;
 	Scaffold.soundAvailable = false;
@@ -78,6 +81,16 @@ SOFTWARE.
 	
 	Scaffold.init = function(canvas) {
 
+	  	if (Scaffold.scaleMode == ScaleModes.CANVAS && Scaffold.scale!=1) {
+	  		//scale the canvas
+	  		canvas.style.width = canvas.width + 'px';
+	  		canvas.style.height = canvas.height + 'px';
+	  		canvas.width = Math.round(canvas.width/2);
+	  		canvas.height = Math.round(canvas.height/2);
+	  		Scaffold.scale = 1; //don't use this value
+	  	
+	  	}
+
 		if (Scaffold.renderMode==0) {
 			Scaffold.renderer = new RendererGL(canvas);
 			if (!Scaffold.renderer.gl && Scaffold.canvasFallback) {
@@ -92,6 +105,8 @@ SOFTWARE.
 	  	if(Sound.init()) {
 	  		Scaffold.soundAvailable = true;
 	  	}
+	  	
+
 	
 		Scaffold.camera = new Camera(canvas.width, canvas.height);
 		
@@ -438,6 +453,5 @@ SOFTWARE.
 	
     window.addEventListener('keydown', Scaffold.keyDown, false);
     window.addEventListener('keyup', Scaffold.keyUp, false);
-	
-	
 })();
+

@@ -8,5 +8,5 @@ sed -i "" "s/%buildNumber%/$buildNumber/g" dist/Scaffold.min.js
 cp dist/Scaffold.min.js demos/quadTree/js/
 cp dist/Scaffold.min.js demos/parallax/js/
 cp dist/Scaffold.min.js demos/platforms/js/
-
+cp dist/Scaffold.min.js/ demos/particles/js/
 
