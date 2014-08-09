@@ -2,12 +2,12 @@
 	
 	//TODO: use groups
 	
-	function ParticleEmitter(x, y, className, interval, lifespan, useQuadTree) {
+	function ParticleEmitter(x, y, objClass, interval, lifespan, useQuadTree) {
 		this.members = [];
 		this.currTime = 0;
 		this.lastTime = 0;
 		this.interval = interval;
-		this.particleClass = className;
+		this.particleClass = objClass;
 		this.x = x;
 		this.y = y;
 		this.elapsedTime = 0;
@@ -27,7 +27,6 @@
 		update: function(t) {
 			this.elapsedTime+=t;
 			this.lastTime+=t;
-			
 		
 			if(this.interval>0 && this.lastTime>=this.interval) {
 				var i = this.lastTime/this.interval >> 0;
@@ -68,7 +67,8 @@
 		
 		addParticle: function() {
 		
-			var p = new self[this.particleClass](this.x, this.y);
+			//var p = new self[this.particleClass](this.x, this.y);
+			var p = new this.particleClass(this.x, this.y);
 			p.expires = this.elapsedTime+this.lifespan;
 			this.members.push(p);
 		},
