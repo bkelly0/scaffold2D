@@ -151,44 +151,53 @@
 			this.prevVelocity = this.velocity;
 
 			if (this.pseudoPhysics) {
-				//this.velocity.y += this.gravity*tp;
+				//timescaled values
+				var g = this.gravity*Scaffold.timeScale;
+				var dx = this.drag.x  * Scaffold.timeScale;
+				var dy = this.drag.y * Scaffold.timeScale;
+				var mvx = this.maxVelocity.x*Scaffold.timeScale;
+				var mvy = this.maxVelocity.y*Scaffold.timeScale;
+				
+				//difference in velocity with and without timescale
+				var dvy = this.velocity.y*Scaffold.timeScale - this.velocity.y; 
+				var dvx = this.velocity.x*Scaffold.timeScale - this.velocity.x;
+				
 				if (this.velocity.y>0) {
-					this.velocity.y += this.gravity-this.drag.y; 
+					this.velocity.y += g-dy; 
 					if (this.velocity.y<0) this.velocity.y = 0;
 				} else if (this.velocity.y<0) {
-					this.velocity.y += this.gravity+this.drag.y; 
+					this.velocity.y += g+dy; 
 					if (this.velocity.y>0) this.velocity.y = 0;
 				} else {
-					this.velocity.y+=this.gravity;
+					this.velocity.y+=g;
 				}
 				
-				if (this.velocity.y>this.maxVelocity.y) {
-					this.velocity.y = this.maxVelocity.y;
-				} else if (this.velocity.y<-this.maxVelocity.y) {
-					this.velocity.y = -this.maxVelocity.y;
+				if (this.velocity.y>mvy) {
+					this.velocity.y = mvy;
+				} else if (this.velocity.y<-mvy) {
+					this.velocity.y = -mvy;
 				}
 				
 				
 				//this.y += this.velocity.y + .5|0; //binary or round
-				this.y+=this.velocity.y*Scaffold.timeScale;
+				this.y+=this.velocity.y+dvy;
 				
 				if (this.velocity.x>0) {
-					this.velocity.x-= this.drag.x;
+					this.velocity.x-= dx;
 					if (this.velocity.x<0) this.velocity.x=0;
 				} else if (this.velocity.x<0) {
-					this.velocity.x += this.drag.x;
+					this.velocity.x += dx;
 					if (this.velocity.x>0) this.velocity.x = 0;
 				}
 				
 				
 				
-				if (this.velocity.x > this.maxVelocity.x) {
-					this.velocity.x = this.maxVelocity.x;
-				} else if (this.velocity.x < -this.maxVelocity.x) {
-					this.velocity.x = -this.maxVelocity.x;
+				if (this.velocity.x > mvx) {
+					this.velocity.x = mvx;
+				} else if (this.velocity.x < -mvx) {
+					this.velocity.x = -mvx;
 				}
-				this.x+=this.velocity.x*Scaffold.timeScale;
-				this.temp = Scaffold.timeScale;
+				this.x+=this.velocity.x+dvx;
 			}
 			
 			
