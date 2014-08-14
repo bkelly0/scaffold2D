@@ -154,6 +154,8 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	    Scaffold.timeScale = elapsedTime/16; //percentage based on 60 fps
 	    if (Scaffold.timeScale > Scaffold.maxTimeScale) {
 	    	Scaffold.timeScale = Scaffold.maxTimeScale;
+	    } if (Scaffold.timeScale<1) {
+	    	Scaffold.timeScale = 1;
 	    }
 	    Scaffold.lastTime = d;
 
