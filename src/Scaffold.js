@@ -80,6 +80,7 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	}
 	
 	Scaffold.init = function(canvas) {
+		
 
 	  	if (Scaffold.scaleMode == ScaleModes.CANVAS && Scaffold.scale!=1) {
 	  		//scale the canvas
@@ -149,17 +150,17 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	Scaffold.run = function() {
 		var d =Date.now();
 	    var elapsedTime = d-Scaffold.lastTime;
-	    if (Scaffold.lastTime==0) elapsedTime = 16;
+	    if (Scaffold.lastTime==0) elapsedTime = 16.67;
 	    
-	    Scaffold.timeScale = elapsedTime/16; //percentage based on 60 fps
+	    Scaffold.timeScale = elapsedTime/16.67; //percentage based on 60 fps
 	    if (Scaffold.timeScale > Scaffold.maxTimeScale) {
 	    	Scaffold.timeScale = Scaffold.maxTimeScale;
-	    } if (Scaffold.timeScale<1) {
-	    	Scaffold.timeScale = 1;
+	    } else if (Scaffold.timeScale<1) {
+	    	Scaffold.timeScale=1; //cap at 100%
 	    }
 	    Scaffold.lastTime = d;
 
-	  
+	   
 	    
 	    Scaffold.currentFPS = (1000/elapsedTime + .5) | 0;
 	    
@@ -262,7 +263,7 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 		var diffB = spB.x - spB.prevPos.x;
 		var diffTotal = Math.abs(diffA) + Math.abs(diffB);
 		var overlap = 0;
-		var tolerance = diffTotal + Scaffold.timeScale*2;
+		var tolerance = diffTotal + Scaffold.timeScale*1;
 		
 		if (diffA > diffB) {
 			overlap = spA.x + spA.spriteWidth - spB.x;
@@ -292,11 +293,10 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 		} else {
 			return;
 		}
-
+		
 		if (!spA.moveable || spA.locked.left) {
 			spB.x += overlap;
 			spB.velocity.x *= -spB.bounce;
-			console.log("left locked");
 		} else if (!spB.moveable || spB.locked.right) {
 			spA.x -= overlap;
 			spA.velocity.x *= -spA.bounce;
@@ -339,8 +339,6 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 		} else {
 			return;
 		}
-		
-		
 		if (!spA.moveable || spA.locked.top) {
 			spB.y += overlap;
 			spB.y = spA.y+spA.spriteHeight;
@@ -362,7 +360,6 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 			spB.velocity.y = average * ((spA.velocity.y>0)?1:-1);
 			
 		}
-		
 	}
 	
 	//Collide Two sprites 
@@ -370,14 +367,14 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	
 		var overlap = Scaffold.getOverlap(spA.getBounds(), spB.getBounds());
 		spA.colliding = false; spB.colliding = false;
-
+	
 		if (overlap.total>0) {
+			
 			if (spA.solidCollide && spB.solidCollide) {
 				Scaffold.resolveY(spA, spB);
-				Scaffold.resolveX(spA, spB);
-				var pp = spA.pseudoPhysics && spB.pseudoPhysics;
-				Scaffold.resolveY(spA, spB);
-				Scaffold.resolveX(spA, spB);
+				if (spA.prevPos.y != spA.y || spB.prevPos.y!=spB.prevPos.y) { //could be part of a series of objects
+					Scaffold.resolveX(spA, spB);
+				}
 
 			}
 			
