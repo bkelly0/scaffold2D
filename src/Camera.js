@@ -1,5 +1,4 @@
-(function() {
-	
+
 	function Camera(w,h) {
 		this.bounds = {x:0, y:0, width:w/Scaffold.scale, height:h/Scaffold.scale};
 		this.following = null;
@@ -109,5 +108,3 @@
 	}
 	
 	self.Camera = Camera;
-	
-})();

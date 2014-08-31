@@ -1,4 +1,3 @@
-(function() {
 	
 	function RendererCanvas(canvas) {
 		this.context = canvas.getContext('2d');
@@ -34,5 +33,3 @@
 			}
 		}
 	}
-	
-})();

@@ -1,5 +1,4 @@
-(function() {
-	
+
 	function Group() {
 		this.members = [];
 		this.quadTree = new QuadTree(0, Scaffold.camera.bounds);
@@ -59,5 +58,3 @@
 	}
 	
 	self.Group = Group;
-	
-})();

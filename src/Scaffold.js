@@ -28,8 +28,7 @@ SOFTWARE.
 var RenderModes = {WEBGL:0, CANVAS:1};
 var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 
-(function() {
-	
+
 	function Scaffold() {
 		
 	}
@@ -452,5 +451,5 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	
     window.addEventListener('keydown', Scaffold.keyDown, false);
     window.addEventListener('keyup', Scaffold.keyUp, false);
-})();
+
 

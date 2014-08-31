@@ -1,4 +1,3 @@
-(function() {
 	
 	function Button(name, x,y,width,height,image) {
 		this.image = image;
@@ -53,10 +52,7 @@
 	};
 	
 	window.Button = Button;
-	
-})();
 
-(function() {
 	function AnimatedButton(name, x,y,width,height,image, animationFramesNormal, animationFramesOver, fps) {
 		this.id = "name";
 		Sprite.call(this, x, y, image, width, height, fps);
@@ -123,4 +119,3 @@
 	}
 	
 	self.AnimatedButton = AnimatedButton;
-})();

@@ -1,5 +1,4 @@
-(function() {
-	
+
 	function PlayState(maxObjects, total) {
 		this.circleGroup = new Group();
 		this.circleGroup.debugQuadTree = true;
@@ -23,4 +22,3 @@
 		this.circleGroup.render();
 	}
 	
-})();

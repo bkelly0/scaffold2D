@@ -1,5 +1,4 @@
-(function() {
-	
+
 	function PlatformMap(img) {
 		ItemMap.call(this);
 		this.spriteClassName = "Platform";
@@ -25,5 +24,3 @@
 
 		}
 	}
-	
-})();

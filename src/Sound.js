@@ -1,5 +1,4 @@
-(function() {
-	
+
 	function Sound(path, onComplete) {
 		this.source = null;
 		this.buffer = null;
@@ -50,7 +49,7 @@
 	
 	self.Sound = Sound;
 
-})();
+
 
 Sound.context=null;
 Sound.gainNode=null;

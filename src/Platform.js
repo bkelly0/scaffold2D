@@ -1,5 +1,4 @@
-(function() {
-	
+
 	function Platform(x,y, spriteSheet, width, height, options) {
 		Sprite.call(this, x,Number(y), spriteSheet, width, height, 12);
 		this.solidCollisions = true;
@@ -84,4 +83,3 @@
 			this.direction.y *= -1;
 		}
 	}
-})();

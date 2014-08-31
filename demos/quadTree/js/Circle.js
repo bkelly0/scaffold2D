@@ -1,5 +1,4 @@
-(function() {
-	
+
 	function Circle(x,y) {
 		Sprite.call(this,x,y,Scaffold.loader.assets['images/circle.png'],10,10);
 		this.direction = {x:1, y:1};
@@ -22,8 +21,8 @@
 	
 	Circle.prototype.update = function(t) {
 		Sprite.prototype.update.call(this,t);
-		this.x += Scaffold.timePercentage*this.speed*this.direction.x;
-		this.y += Scaffold.timePercentage*this.speed*this.direction.y;
+		this.x += Scaffold.timeScale*this.speed*this.direction.x;
+		this.y += Scaffold.timeScale*this.speed*this.direction.y;
 		if (this.x<=0) {
 			this.x = 0;
 			this.direction.x*=-1;
@@ -46,6 +45,3 @@
 			this.playAnimation("white");
 		}
 	}
-	
-	
-})();

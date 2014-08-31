@@ -1,5 +1,3 @@
-(function() {
-	
 	//TODO: use groups
 	
 	function ParticleEmitter(x, y, objClass, interval, lifespan, useQuadTree) {
@@ -100,5 +98,3 @@
 	}
 	
 	self.ParticleEmitter = ParticleEmitter;
-	
-})();

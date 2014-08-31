@@ -1,5 +1,3 @@
-(function() {
-	
 	
 	function ProgressBar(x,y, width, height, borderRGBA, fillRGBA, backgroundRGBA) {
 		//the arguments should be arrays [r,g,b,a]
@@ -38,5 +36,3 @@
 	}
 	
 	self.ProgressBar = ProgressBar;
-	
-})();

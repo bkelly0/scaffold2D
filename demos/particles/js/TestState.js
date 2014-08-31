@@ -1,7 +1,7 @@
 (function() {
 	
 	function TestState() {
-		this.emitter = new ParticleEmitter(400,200,"Particle",2, 2000);
+		this.emitter = new ParticleEmitter(400,200,Particle,2, 2000);
 		this.emitter.useTree = false;
 	}
 	

@@ -1,4 +1,3 @@
-(function() {
 
 	function State() {
 		//listenToMouse needs called to start populating these values
@@ -37,4 +36,3 @@
 	
 	self.State = State;
 
-})();

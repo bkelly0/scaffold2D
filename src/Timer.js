@@ -1,4 +1,3 @@
-(function() {
 	
 	function Timer(i, rpt, callback) {
 		this.interval = i;
@@ -29,4 +28,4 @@
 	
 	self.Timer = Timer;
 	
-})();
+

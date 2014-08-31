@@ -1,5 +1,4 @@
-( function() {
-	
+
 	function QuadTree(level, bounds, maxLevels, maxObj, dbg) {
 		this.level = level;
 		this.bounds = bounds;
@@ -184,4 +183,3 @@
 	}
 	
 	self.QuadTree = QuadTree;
-})();

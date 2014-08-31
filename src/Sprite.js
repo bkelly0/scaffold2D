@@ -1,4 +1,4 @@
-(function() {
+
 	function Sprite(x, y, spriteSheet, sw, sh, fps, options) {
 		if (!options) {
 			options = {enableFlipping:true};
@@ -11,7 +11,7 @@
 		this.images = spriteSheet || null;
 		
 		this.colliding = false;
-		this.solidCollide = true;
+		this.solidCollide = false;
 		this.moveable = true;
 		this.locked = {left:0, right:0, top:0, bottom:0}; //locks edges for collision resolution
 		
@@ -260,4 +260,3 @@
 	
 	self.Sprite = Sprite;
 	
-})();

@@ -1,5 +1,4 @@
-(function() {
-	
+
 	function TileMap(tWidth, tHeight, images, data) {
 		this.tileWidth = tWidth;
 		this.tileHeight = tHeight;
@@ -749,4 +748,4 @@
 	}
 	
 	self.TileMap = TileMap;
-})();
+

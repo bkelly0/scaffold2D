@@ -1,4 +1,3 @@
-(function() {
 	
 	function ItemMap() {
 		this.map = null;
@@ -109,5 +108,3 @@
 		}
 		
 	}
-	
-})();

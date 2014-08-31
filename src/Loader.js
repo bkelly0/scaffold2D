@@ -1,4 +1,4 @@
-(function() {
+
 	/*
 	 * Loads image, maps, and audio assets
 	 * 
@@ -87,5 +87,3 @@
 		}
 	}
 	self.Loader = Loader;
-	
-})();

@@ -1,4 +1,3 @@
-(function() {
 	
 	function RendererGL(canvas) {
 		this.textures = [];
@@ -335,4 +334,3 @@
 	
 	self.RendererGL=RendererGL;
 	
-})();
