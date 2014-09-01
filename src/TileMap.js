@@ -1,4 +1,4 @@
-
+	
 	function TileMap(tWidth, tHeight, images, data) {
 		this.tileWidth = tWidth;
 		this.tileHeight = tHeight;
@@ -34,6 +34,7 @@
 		this.translation = {x:0, y:0};
 		this.renderOffset = {x:0, y:0};
 		this.emptyRow = [];
+		this.drawTranslated = false; //experimental for now
 			
 		if (Scaffold.renderMode==1) {
 			//canvas positions
@@ -274,7 +275,8 @@
 			this.renderData = positions;
 		},
 		
-		render: function() {
+		//Still working on this
+		renderTranslated: function() {
 			var rowAdded = false;
 			var colAdded = false;
 			if (this.mapArray.length==0) {
@@ -402,14 +404,14 @@
 
 		},
 		
-		dataAudit: function() {
-			
-		},
-		
-		renderOld: function() {
-			return;
+		render: function() {
+
 			if (this.mapArray.length==0) {
 				return;
+			}
+			
+			if (this.drawTranslated) {
+				this.renderTranslated();
 			}
 			
 			var x, y, tileNum = 0;
@@ -437,6 +439,7 @@
 				
 			//this.currRenderIndexes = [];
 			for (var i=firstRow; i< lastRow; i++) {
+				currRow = i;
 				this.currRenderIndexes[currRow] = [];
 				
 				for (var j=firstCol; j<lastCol;j++) {
@@ -498,7 +501,6 @@
 							positions[positions.length]= this.framePositions[tileNum].ty2;
 							
 							this.lastPosition = {x: x2, y:y2};
-							addedCount++;
 							
 						} //end else
 					
@@ -507,7 +509,7 @@
 				currRow ++;
 			} //end outer loop
 			if (Scaffold.renderMode==0) {
-				Scaffold.renderer.draw(new Float32Array(positions) ,this.texture, translation);
+				Scaffold.renderer.draw(new Float32Array(positions) ,this.texture, 0);
 				this.lastRenderData = positions;
 			}
 
