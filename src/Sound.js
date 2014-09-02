@@ -34,16 +34,16 @@
 		},
 		
 		stop: function() {
-			this.source.noteOff(0);
+			this.source.stop();;
 		},
 		
 		loop: function() {
-			var source = Sound.context.createBufferSource();
-			source.buffer = this.buffer;
-			source.connect(Sound.gainNode);
+			this.source = Sound.context.createBufferSource();
+			this.source.buffer = this.buffer;
+			this.source.connect(Sound.gainNode);
 			Sound.gainNode.connect(Sound.context.destination); 
-			source.loop = true;
-			source.start(0);
+			this.source.loop = true;
+			this.source.start(0);
 		}
 	}
 	

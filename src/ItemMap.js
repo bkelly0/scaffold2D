@@ -44,6 +44,7 @@
 			//set bounds to check
 			var i = this.map.length;
 			while(i--) {
+				thia.map[i].added = false;
 				this.map[i].bounds = {x: this.map[i].x, y: this.map[i].y-json.gidCache[this.map[i].gid].height, width: json.gidCache[this.map[i].gid].width, height: json.gidCache[this.map[i].gid].height};	
 			}
 
@@ -64,6 +65,7 @@
 			var spWidth = 0;
 			var spHeight = 0;
 			
+			
 			while(i--) {
 				tileCount = (json.tilesets[i].imagewidth / json.tilesets[i].tilewidth) * (json.tilesets[i].imageheight/json.tilesets[i].tileheight);
 				if (gid>=json.tilesets[i].firstgid && gid< json.tilesets[i].firstgid+tileCount) {
@@ -78,7 +80,7 @@
 			while(i--) {
 				this.map[i].bounds = {x:this.map[i].x, y:this.map[i].y-spHeight, width:spWidth, height:spHeight};
 			}
-			
+
 		},
 		
 		
@@ -88,7 +90,9 @@
 			var overlap = 0;
 			
 			while(i--) {
-				//console.log(i + " " + this.map.length);
+				if (this.map[i].added) {
+					continue;
+				}
 				overlap = Scaffold.getOverlap(Scaffold.camera.bounds,this.map[i].bounds);
 				if (overlap.total>0) {
 					if (!this.callback) {
@@ -96,7 +100,8 @@
 					} else {
 						this.callback(this.map[i]);
 					}
-					this.map.splice(i,1);
+					this.map[i].added = true;
+					//this.map.splice(i,1);
 				}
 			}
 			
@@ -105,6 +110,13 @@
 		
 		render: function() {
 			this.group.render();
+		},
+		
+		reset: function() {
+			var i = this.map.length;
+			while(i--) {
+				this.map[i].added = false;
+			}
 		}
 		
 	}
