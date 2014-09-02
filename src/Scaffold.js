@@ -1,6 +1,6 @@
 /*!
 
-ScaffoldJS 1.0.%buildNumber%
+Scaffold2D 1.0.%buildNumber%
 
 The MIT License (MIT)
 
