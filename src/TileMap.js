@@ -34,7 +34,12 @@
 		this.translation = {x:0, y:0};
 		this.renderOffset = {x:0, y:0};
 		this.emptyRow = [];
+		
 		this.drawTranslated = false; //experimental for now
+		//translated drawing using caching and won't be able to support animated tiles
+		
+		this.animatedTiles = {};
+		this.animatedTileNums = []; //for quicker looping
 			
 		if (Scaffold.renderMode==1) {
 			//canvas positions
@@ -61,6 +66,7 @@
 			console.log(this.framePositions);
 			this.texture = Scaffold.renderer.textures[images.src];
 		}
+		
 		
 		TileMap.test = true;
 			
@@ -115,7 +121,16 @@
 			this.numRenderRows = Math.ceil(Scaffold.camera.bounds.height / this.tileHeight)+1;
 			this.numRenderCols = Math.ceil(Scaffold.camera.bounds.width / this.tileWidth)+1;
 			this.emptyRow = new Array(24*(this.numRenderCols));
-			console.log("rows: " + this.numRenderRows + " cols: " + this.numRenderCols);
+			
+		
+		},
+		
+		//only needs called if using animated tiles
+		update: function(t) {
+			var i = this.animatedTileNums.length;
+			while(i--){
+				this.animatedTiles[this.animatedTileNums[i]].update(t);
+			}
 		},
 		
 		mapLoaded: function(data) {
@@ -307,6 +322,9 @@
 				for (var i=firstRow; i< lastRow; i++) {
 					for (var j=firstCol; j<lastCol;j++) {
 						tileNum = this.mapArray[i][j];
+						if (this.animatedTiles[tileNum]) {
+							tileNum = this.animatedTiles[tileNum].tileFrame; //animated tile
+						}
 						Scaffold.renderer.context.drawImage(this.tileImages, this.framePositions[tileNum].x , this.framePositions[tileNum].y,
 								this.tileWidth, this.tileHeight, 
 								this.tileWidth*j-(Scaffold.camera.bounds.x*this.parallax), this.tileHeight*i-(Scaffold.camera.bounds.y*this.parallax),this.tileWidth,this.tileHeight);
@@ -445,6 +463,9 @@
 				for (var j=firstCol; j<lastCol;j++) {
 					tileNum = t.mapArray[i][j];
 					
+					if (this.animatedTiles[tileNum]) {
+						tileNum = this.animatedTiles[tileNum].tileFrame; //animated tile
+					}
 					
 					for(var k=0;k<this.tileAddedListeners.length;k++) {
 						this.tileAddedListeners[k]({'row':i, 'col':j});
@@ -744,7 +765,23 @@
 		var map = new TileMap(json.tilewidth,json.tileheight, images, null);
 		map.numCols = json.layers[layer].width;
 		map.numRows = json.layers[layer].height;
-		console.log(json);
+		
+		//look for animated tiles		
+		var src = images.src;
+		var i = json.tilesets.length;
+		while(i--) {
+			if (src.indexOf(json.tilesets[i].image)>0) {
+				for(var f in json.tilesets[i].tileproperties) { //is there a faster way?
+					if (json.tilesets[i].tileproperties[f].animation) {
+						map.animatedTiles[f] = new AnimatedTile(json.tilesets[i].tileproperties[f].animation.split(','),json.tilesets[i].tileproperties[f].fps);
+						map.animatedTileNums[map.animatedTileNums.length] = f;
+					}
+				}
+				break;
+			}
+		}
+		console.log(map.animatedTiles);
+		console.log(map.animatedTiles);
 		map.setDataFromJSON(json.layers[layer].data);
 		return map;
 	}
