@@ -139,7 +139,6 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	
 	}
 	
-
 	//changes state, but lets the current state complete the update/render cycle
 	Scaffold.setState = function(state) {
 		Scaffold.nextState = state;
