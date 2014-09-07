@@ -53,6 +53,7 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	Scaffold.maxTimeScale = 2.5;
 	Scaffold.soundAvailable = false;
 	Scaffold.canvasFallback = true;
+	Scaffold.nexState = null;
 	
 	//lookup for gamepad.button indexes
 	Scaffold.gamepadLookup = {
@@ -139,14 +140,16 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	}
 	
 
+	//changes state, but lets the current state complete the update/render cycle
 	Scaffold.setState = function(state) {
-		if (state!=null) {
-			state = null;
-		}
-		Scaffold.state = state;
+		Scaffold.nextState = state;
 	}
 	
 	Scaffold.run = function() {
+		if (Scaffold.nextState!=null) {
+			Scaffold.state = Scaffold.nextState;
+		}
+		
 		var d =Date.now();
 	    var elapsedTime = d-Scaffold.lastTime;
 	    if (Scaffold.lastTime==0) elapsedTime = 16.67;
@@ -165,7 +168,6 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	    
 	    
 	    if (!Scaffold.paused) {
-	
 			var i = Scaffold.timers.length;
 			while(i--) {
 				Scaffold.timers[i].update(elapsedTime);

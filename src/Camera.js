@@ -55,8 +55,11 @@
 					
 					//offset vertically
 					if (this.maxY ==null || newY < this.maxY) {
-						this.bounds.y = newY + .5 | 0;
+						this.bounds.y = newY + .5 | 0;						
 						this.prevBounds.y = this.bounds.y;
+					}
+					if (this.bounds.y<0) {
+						this.bounds.y=0;
 					}
 				} else if (this.bounds.y>0) {
 					this.bounds.y = newY;
