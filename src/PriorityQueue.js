@@ -20,6 +20,9 @@ PriorityQueue.prototype = {
     size: function () {
         return this.data.length;
     },
+    empty: function() {
+    	return this.data.length;
+    },
     qSort: function(begin,end) {
         if (begin < end-1) {
             var ret = [];
