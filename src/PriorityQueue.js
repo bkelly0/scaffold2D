@@ -7,21 +7,24 @@ function PriorityQueue() {
 PriorityQueue.prototype = {
     data: [],
     count: 0,
-    insert: function (value, priority) {
+    push: function (value, priority) {
         this.data[this.data.length] = {
             v: value,
             p: priority
         };
         this.sort();
     },
+
     pop: function () {
-        return this.data.shift();
+        return this.data.shift().v;
     },
     size: function () {
         return this.data.length;
     },
     empty: function() {
-    	return this.data.length;
+    	if (this.data.length>0)
+    		return 0;
+    	return 1;
     },
     qSort: function(begin,end) {
         if (begin < end-1) {
@@ -60,3 +63,4 @@ PriorityQueue.prototype = {
    		this.qSort(0,this.data.length);
     }
 }
+window.PriorityQueue = PriorityQueue;
