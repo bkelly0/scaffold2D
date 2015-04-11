@@ -112,13 +112,16 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 		Scaffold.camera = new Camera(canvas.width, canvas.height);
 		
 		//gamepads only currently supported by chrome and firefox 
-		if (navigator.userAgent.indexOf("Firefox")!=-1) {
-			window.addEventListener('MozGamepadConnected', Scaffold.gamepadConnected, false);
-    		window.addEventListener('MozGamepadDisconnected', Scaffold.gamepadDisconnected, false);
-		} else if (navigator.userAgent.indexOf("Chrome")!=-1 && navigator.userAgent.indexOf("Mobile")==-1) {
-			Scaffold.gamepads = navigator.webkitGetGamepads();
+		try {
+			if (navigator.userAgent.indexOf("Firefox")!=-1) {
+				window.addEventListener('MozGamepadConnected', Scaffold.gamepadConnected, false);
+	    		window.addEventListener('MozGamepadDisconnected', Scaffold.gamepadDisconnected, false);
+			} else if (navigator.userAgent.indexOf("Chrome")!=-1 && navigator.userAgent.indexOf("Mobile")==-1) {
+				Scaffold.gamepads = navigator.webkitGetGamepads();
+			}
+		} catch (e) {
+			console.log(e);
 		}
-
 	
 		if (!self.requestAnimationFrame) {
 			if (self.msRequestAnimationFrame) {
