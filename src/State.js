@@ -17,15 +17,15 @@
 		},
 		
 		listenToMouse: function() {
-			this.canvasRect = Scaffold.context.canvas.getBoundingClientRect();
-			Scaffold.context.canvas.onmousemove = (function(self) {
+			this.canvasRect = Scaffold.canvas.getBoundingClientRect();
+			Scaffold.canvas.onmousemove = (function(self) {
 				return function(e) {
 					self.mouseX = e.clientX - self.canvasRect.left;
 					self.mouseY = e.clientY - self.canvasRect.top;
 				}
 			})(this);
 			
-			Scaffold.context.canvas.onmouseup = (function(self) {
+			Scaffold.canvas.onmouseup = (function(self) {
 				return function(e) {
 					self.lastMouseUp = {x: self.mouseX, y: self.mouseY, timestamp: new Date().getTime()};
 				}

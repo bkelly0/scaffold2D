@@ -81,7 +81,7 @@ var ScaleModes = {WEBGL:0, CANVAS:1}; //canvas is faster, but webgl looks better
 	
 	Scaffold.init = function(canvas) {
 		
-
+		Scaffold.canvas = canvas;
 	  	if (Scaffold.scaleMode == ScaleModes.CANVAS && Scaffold.scale!=1) {
 	  		//scale the canvas
 	  		canvas.style.width = canvas.width + 'px';
