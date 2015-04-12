@@ -43,16 +43,16 @@ AStarPathFind.prototype = {
 			 
 				this.closed[node[0]] = 1; //add to closed
 				children = this.problem.getChildNodes(node);
-	
 				//add costs with previous nodes
-				if (step > 0) {    
+				if (step > 0) { 
                		 prevNode = parents[node];
-                	dist = parents[node][1]+node[2]
-         		 } else {
+                	dist = parents[node][1]+node[1];
+                	node[1] = dist; //set accumulated distance
+           		 } else {
                 	dist = 0;
 				 }
 				 step++;
-			
+				 			
 				var i=children.length;
 				while(i--) {
 					var child = children[i];
