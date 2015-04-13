@@ -20,8 +20,8 @@
 			this.canvasRect = Scaffold.canvas.getBoundingClientRect();
 			Scaffold.canvas.onmousemove = (function(self) {
 				return function(e) {
-					self.mouseX = e.clientX - self.canvasRect.left;
-					self.mouseY = e.clientY - self.canvasRect.top;
+					self.mouseX = e.clientX - self.canvasRect.left - window.scrollX;
+					self.mouseY = e.clientY - self.canvasRect.top - window.scrollY;
 				}
 			})(this);
 			
