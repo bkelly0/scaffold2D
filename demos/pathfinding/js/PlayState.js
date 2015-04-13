@@ -8,6 +8,7 @@
 		
 		this.pathSprites = new Group();
 		this.exploredGroup = new Group();
+		this.goalMarker = new Sprite(0,0,Scaffold.loader.assets['images/path.jpg'],10,10);
 		
 		Scaffold.gravity = 0;
 		
@@ -15,9 +16,7 @@
 		for (var node in this.aStar.closed) {
 			node = node.split(",");
 			var row = parseInt(node[0]);
-			if (row==2) {
-				console.log(node);
-			}
+		
 		
 			this.exploredGroup.add(new Sprite(parseInt(node[1])*10,parseInt(node[0])*10,Scaffold.loader.assets['images/explored.png'],10,10));
 		}
@@ -28,6 +27,11 @@
 	
 	PlayState.prototype.update = function(t) {
 		Scaffold.camera.update(t);
+		
+		this.listenToMouse();
+		var tile = this.map.getTileAt(this.mouseX, this.mouseY);
+		this.goalMarker.x = tile.column * 10;
+		this.goalMarker.y = this.row * 10;
 		
 		if (this.solution.length>0) {
 			var node = this.solution.shift();
@@ -41,6 +45,7 @@
 		this.map.render();
 		this.exploredGroup.render();
 		this.pathSprites.render();
+		this.goalMarker.render();
 	
 	}
 	
