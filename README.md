@@ -27,7 +27,8 @@ Vector lines and circles with WebGL
 Audio with Web Audio
 
 ##COMING SOON:
+A* Pathfinding
 
-Example Files
+More Example Files
 
 Angled Tiles
