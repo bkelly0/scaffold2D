@@ -1,5 +1,7 @@
 /*
  * A* Search for pathfinding
+ * TODO: fix missing parent issue
+ *
  */
 
 function AStarPathFind(pathProb) {
@@ -35,7 +37,6 @@ AStarPathFind.prototype = {
             	 		break;
             	 	}
             	 }
-            	 console.log(solution);
 				return solution;
 			}
 			
@@ -47,7 +48,9 @@ AStarPathFind.prototype = {
 				//add costs with previous nodes
 				if (step > 0) { 
                		 prevNode = parents[node[0]];
-                	dist = parents[node[0]][1]+node[1];
+
+               		 dist = parents[node[0]][1]+node[1];
+                	
                 	node[1] = dist; //set accumulated distance
            		 } else {
                 	dist = 0;
@@ -58,6 +61,7 @@ AStarPathFind.prototype = {
 				while(i--) {
 					var child = children[i];
 					if (this.closed[child[0]]!=1) {
+						console.log(child[0]);
 						parents[child[0]] = node;
 						var h = this.heuristic(child[0][0], child[0][1]);
 						fringe.push(child, dist+child[1]+h);
