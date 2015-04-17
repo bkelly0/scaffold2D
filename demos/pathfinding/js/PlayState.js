@@ -10,16 +10,21 @@
 		this.exploredGroup = new Group();
 		
 		this.selectGoal = true;
-		this.goalMarker = new Sprite(0,0,Scaffold.loader.assets['images/path.jpg'],10,10);
+		this.goalMarker = new Sprite(20,20,Scaffold.loader.assets['images/path.jpg'],10,10);
+		
+		this.startMarker = new Sprite(20,20,Scaffold.loader.assets['images/path.jpg'],10,10);
 		
 		Scaffold.gravity = 0;
 		
 		this.listenToMouse();
-		
+		this.searching = false;
 
 		
 		var that = this;
 		Scaffold.canvas.onmousedown = function(e) {
+			if (that.searching)
+				return;
+				
 			//clear display
 			that.exploredGroup = new Group();
 			that.pathSprites = new Group();
@@ -31,7 +36,12 @@
 			console.log(that.goalMarker.y/10, that.goalMarker.x/10);
 			that.problem = new PathFindingProblem(that.map,[2,2],[that.goalMarker.y/10, that.goalMarker.x/10]);
 			that.aStar = new AStarPathFind(that.problem);
+			that.searching = true;
+			var startTime = Date.now();
 			that.solution = that.aStar.search();
+			var time = (Date.now() - startTime)/1000;
+			$('#msg').html("Status: Optimal solution found of " + that.solution.length + " steps. Found in " + time + " seconds. " + Object.keys(that.aStar.closed).length + " nodes explored.");
+			that.searching = false;
 			//show explored areas
 			for (var node in that.aStar.closed) {
 				node = node.split(",");
@@ -74,6 +84,7 @@
 		this.exploredGroup.render();
 		this.pathSprites.render();
 		this.goalMarker.render();
+		this.startMarker.render();
 	
 	}
 	

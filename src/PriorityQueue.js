@@ -2,6 +2,7 @@
 * PriorityQueue using QuickSort
 */
 function PriorityQueue() {
+	this.data = [];
 
 }
 PriorityQueue.prototype = {

@@ -55,7 +55,9 @@
 
 <body>
 	<div id="glwarning">Your browser does not support WebGL or it is disabled. Scaffold2D is falling back to canvas render mode. Please enable WebGL for best performance. <a href="http://get.webgl.org/troubleshooting" target="_blank">http://get.webgl.org/troubleshooting</a></div>
-
+    The start point is in the upper left corner. Click on the maze to select an end point.<br/>
+    The optimal path will show in green. The explored areas will be shown in blue.
+    <div id="msg" style="color:#333399; font-weight:bold;">Status: waiting</div>
     <canvas id="myCanvas" width="750" height="750"></canvas>
 </body>
 

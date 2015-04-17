@@ -1,6 +1,6 @@
 /*
  * A* Search for pathfinding
- * TODO: fix missing parent issue
+ *
  *
  */
 
@@ -17,12 +17,15 @@ AStarPathFind.prototype = {
 		var children;
 		var dist=0;
 		var step = 0;
-		
+
+		fringe.data = []; //? shouldn't have to clear this
 		fringe.push(this.problem.getStartState(), 1);
+
 	
 		while(!fringe.empty()) {
 			
 			node = fringe.pop();
+			
 			if (this.problem.isGoal(node)) {
 				var solution = [];
 				//trace back solution
@@ -42,13 +45,11 @@ AStarPathFind.prototype = {
 			
 			//traverse the tree
 			if (this.closed[node[0]]!=1) {
-			 
 				this.closed[node[0]] = 1; //add to closed
 				children = this.problem.getChildNodes(node);
 				//add costs with previous nodes
 				if (step > 0) { 
                		 prevNode = parents[node[0]];
-
                		 dist = parents[node[0]][1]+node[1];
                 	
                 	node[1] = dist; //set accumulated distance
@@ -61,7 +62,7 @@ AStarPathFind.prototype = {
 				while(i--) {
 					var child = children[i];
 					if (this.closed[child[0]]!=1) {
-						console.log(child[0]);
+						//console.log(child[0]);
 						parents[child[0]] = node;
 						var h = this.heuristic(child[0][0], child[0][1]);
 						fringe.push(child, dist+child[1]+h);
@@ -69,6 +70,7 @@ AStarPathFind.prototype = {
 				}
 			}
 		}
+		return []; //solution not found
 	},
 	heuristic: function(row,col) {
 		//manhattan distance from goal
