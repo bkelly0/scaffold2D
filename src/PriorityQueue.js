@@ -15,7 +15,13 @@ PriorityQueue.prototype = {
         };
         this.sort();
     },
-
+    noSortPush: function (value, priority) {
+        //this is faster if pushing a lot of objects before a pop is done
+    	this.data[this.data.length] = {
+            v: value,
+            p: priority
+        };
+    },
     pop: function () {
         return this.data.shift().v;
     },

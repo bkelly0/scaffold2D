@@ -59,14 +59,19 @@ AStarPathFind.prototype = {
 				 step++;
 				 			
 				var i=children.length;
+				var added = false; //new children added to fringe
 				while(i--) {
 					var child = children[i];
 					if (this.closed[child[0]]!=1) {
 						//console.log(child[0]);
 						parents[child[0]] = node;
 						var h = this.heuristic(child[0][0], child[0][1]);
-						fringe.push(child, dist+child[1]+h);
+						fringe.noSortPush(child, dist+child[1]+h);
+						added = true;
 					}
+				}
+				if (added) {
+					fringe.sort();
 				}
 			}
 		}
